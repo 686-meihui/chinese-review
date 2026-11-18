@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>二上第六課 小鎮的柿餅節｜互動複習</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#fff8ef; --card:#ffffff; --ink:#3b2a1e; --muted:#8a7360;
+  --persimmon:#e8692c; --persimmon-soft:#fde3d3; --gold:#f2b134; --gold-soft:#fff0c9;
+  --leaf:#4f8a3c; --leaf-soft:#e3f1dc; --sky:#3d7fc4; --sky-soft:#e1edf9;
+  --red:#d64545; --red-soft:#fbe1e1; --line:#ead8c4;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"LXGW WenKai TC","BiauKai","DFKai-SB","Kaiti TC","STKaiti",serif;font-size:20px;line-height:1.6}
+header{background:linear-gradient(135deg,#f08a4b,#e8692c);color:#fff;padding:18px 20px 14px;text-align:center}
+header h1{margin:0;font-size:30px;letter-spacing:2px}
+header p{margin:2px 0 0;opacity:.9;font-size:17px}
+nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;position:sticky;top:0;background:var(--bg);z-index:5;border-bottom:2px solid var(--line)}
+nav button{font:inherit;font-size:18px;border:2px solid var(--persimmon);background:#fff;color:var(--persimmon);border-radius:999px;padding:6px 16px;cursor:pointer}
+nav button.on{background:var(--persimmon);color:#fff}
+main{max-width:1000px;margin:0 auto;padding:16px}
+section{display:none} section.on{display:block}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:4px 0 14px}
+.bar .tip{color:var(--muted);font-size:17px}
+.btn{font:inherit;font-size:17px;border:none;border-radius:10px;padding:7px 14px;cursor:pointer;background:var(--gold-soft);color:var(--ink);border:2px solid var(--gold)}
+.btn.main{background:var(--persimmon);border-color:var(--persimmon);color:#fff}
+.btn:active{transform:translateY(1px)}
+h2{margin:6px 0;font-size:24px;color:var(--persimmon)}
+h3{margin:18px 0 8px;font-size:21px}
+
+/* mind map */
+.map{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:stretch}
+.root{background:var(--persimmon);color:#fff;border-radius:50%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:26px;font-weight:700;padding:20px;align-self:center;box-shadow:0 6px 0 #c4521b}
+.branches{display:flex;flex-direction:column;gap:12px;position:relative}
+.node{background:var(--card);border:2px solid var(--line);border-left:8px solid var(--c,var(--gold));border-radius:14px;padding:10px 14px;position:relative}
+.node::before{content:"";position:absolute;left:-24px;top:50%;width:16px;border-top:3px dashed var(--line)}
+.node .tag{display:inline-block;background:var(--c,var(--gold));color:#fff;border-radius:8px;padding:0 10px;font-size:17px;margin-right:6px}
+.node .row{margin:4px 0}
+.sub{display:inline-block;color:var(--muted);font-size:16px;border:1px solid var(--line);border-radius:6px;padding:0 6px;margin-right:4px}
+.top3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.blank{display:inline-block;min-width:3.2em;padding:1px 10px;margin:2px 2px;border:2.5px dashed var(--persimmon);border-radius:8px;background:var(--persimmon-soft);color:transparent;cursor:pointer;text-align:center;user-select:none;position:relative;transition:background .15s}
+.blank::after{content:"？";color:var(--persimmon);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700}
+.blank.open{color:var(--ink);background:#fff;border-style:solid;border-color:var(--leaf)}
+.blank.open::after{content:none}
+.arrow{color:var(--muted)}
+.prog{font-size:17px;color:var(--muted)}
+
+/* quiz */
+.q{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 16px;margin:10px 0}
+.q .num{display:inline-block;background:var(--gold);color:#fff;border-radius:50%;width:30px;height:30px;text-align:center;line-height:30px;font-size:16px;margin-right:6px}
+.q .stem{font-size:22px}
+.q .hole{display:inline-block;min-width:2.4em;border-bottom:3px solid var(--persimmon);text-align:center;color:var(--persimmon);font-weight:700;margin:0 3px}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.opt{font:inherit;font-size:22px;min-width:64px;padding:4px 14px;border-radius:12px;border:2px solid var(--sky);background:var(--sky-soft);color:var(--ink);cursor:pointer}
+.opt.right{background:var(--leaf-soft);border-color:var(--leaf)}
+.opt.wrong{background:var(--red-soft);border-color:var(--red);text-decoration:line-through}
+.opt:disabled{cursor:default}
+.fb{margin-top:6px;font-size:18px;min-height:0}
+.fb.ok{color:var(--leaf)} .fb.no{color:var(--red)}
+.score{position:sticky;bottom:10px;margin:16px auto 0;width:max-content;background:#fff;border:2px solid var(--persimmon);border-radius:999px;padding:4px 18px;font-size:18px;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.zy{font-family:"LXGW WenKai TC","BiauKai",serif;letter-spacing:1px}
+.big{font-size:28px;color:var(--persimmon);font-weight:700}
+.dot{color:var(--persimmon);font-weight:700;text-decoration:underline wavy var(--persimmon);text-underline-offset:6px}
+.swap{display:inline-block;background:var(--gold-soft);border:2px solid var(--gold);border-radius:8px;padding:0 8px;margin:0 2px}
+.chip{display:inline-block;background:var(--leaf-soft);border:2px solid var(--leaf);border-radius:10px;padding:2px 10px;margin:3px}
+.idioms{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.done{background:var(--leaf-soft);border:2px solid var(--leaf);border-radius:14px;padding:12px 16px;margin-top:14px;text-align:center;font-size:22px;display:none}
+@media (max-width:700px){
+  body{font-size:18px}
+  .map{grid-template-columns:1fr}
+  .root{aspect-ratio:auto;border-radius:16px;padding:12px;font-size:24px}
+  .node::before{display:none}
+  .top3{grid-template-columns:1fr}
+}
+.opt.sel{background:var(--gold-soft);border-color:var(--gold);box-shadow:0 0 0 3px var(--gold) inset;font-weight:700}
+.opt.right{background:var(--leaf-soft)!important;border-color:var(--leaf)!important;box-shadow:none}
+.opt.wrong{background:var(--red-soft)!important;border-color:var(--red)!important;text-decoration:line-through;box-shadow:none}
+.q.ok{border-color:var(--leaf);background:#f6fbf3}
+.q.no{border-color:var(--red);background:#fff6f6}
+.q.need{border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+.onlywrong .q.ok{display:none}
+.submitbar{text-align:center;margin:18px 0 6px}
+.submitbar .big-btn{font-size:24px;padding:10px 40px;border-radius:14px}
+.submitbar .msg{color:var(--red);margin-top:6px;font-size:18px}
+.word{display:inline-flex;align-items:center;flex-wrap:wrap;gap:2px;vertical-align:middle}
+.zc{display:inline-flex;align-items:center;margin:0 2px}
+.zc .ch{font-size:32px;line-height:1.2}
+.zc .zy{writing-mode:vertical-rl;text-orientation:upright;font-size:13px;line-height:1;letter-spacing:-1px;color:#5a4636;min-width:12px;margin-left:1px}
+.zc .zy:empty{min-width:4px}
+.hole2{display:inline-flex;width:1.25em;height:1.25em;align-items:center;justify-content:center;border:2.5px dashed var(--persimmon);border-radius:8px;background:var(--persimmon-soft);color:var(--persimmon);font-size:30px}
+.hole2.filled{border-style:solid;border-color:var(--gold);background:var(--gold-soft);color:var(--ink)}
+.hole2.hok{border-color:var(--leaf);background:var(--leaf-soft);color:var(--leaf)}
+.hole2.hno{border-color:var(--red);background:var(--red-soft);color:var(--red)}
+.rowlab{align-self:center;color:var(--persimmon);font-weight:700;margin-right:2px}
+.tgt .ch{color:var(--persimmon);font-weight:700}
+.zyin{font:inherit;font-size:22px;width:5.2em;margin-left:6px;padding:2px 8px;border:2.5px dashed var(--persimmon);border-radius:10px;background:var(--persimmon-soft);text-align:center;color:var(--ink)}
+.zyin.active{border-style:solid;border-color:var(--sky);background:#fff;outline:3px solid var(--sky-soft)}
+.zyin.iok{border:2.5px solid var(--leaf);background:var(--leaf-soft)}
+.zyin.ino{border:2.5px solid var(--red);background:var(--red-soft);text-decoration:line-through}
+.zy-inline{font-weight:700;letter-spacing:2px}
+.kp{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff;border-top:3px solid var(--sky);box-shadow:0 -6px 18px rgba(0,0,0,.12);padding:8px 10px 12px}
+.kp-top{display:flex;justify-content:space-between;align-items:center;max-width:900px;margin:0 auto 6px;font-size:18px}
+.kp-keys{display:flex;flex-wrap:wrap;gap:6px 10px;justify-content:center;max-width:900px;margin:0 auto}
+.kg{display:flex;gap:4px}
+.kp-keys button{font:inherit;font-size:22px;width:44px;height:44px;border-radius:10px;border:2px solid var(--sky);background:var(--sky-soft);cursor:pointer;padding:0}
+.kp-keys .t{background:var(--gold-soft);border-color:var(--gold);width:auto;min-width:44px;padding:0 8px;font-size:20px}
+body.kpon{padding-bottom:260px}
+body.kpon .score{display:none}
+.subtabs{display:flex;gap:0;margin:4px 0 6px;border-bottom:3px solid var(--sky)}
+.subtabs button{font:inherit;font-size:19px;padding:6px 22px;border:2px solid var(--sky);border-bottom:none;background:#fff;color:var(--sky);border-radius:12px 12px 0 0;margin-right:6px;cursor:pointer}
+.subtabs button.on{background:var(--sky);color:#fff}
+.blk{display:none}.blk.on{display:block}
+</style>
+</head>
+<body>
+<header>
+  <h1>🍊 第六課　小鎮的柿餅節</h1>
+  <p>二年級上學期國語・互動複習</p>
+</header>
+<nav id="tabs">
+  <button data-t="u1" class="on">① 課文心智圖</button>
+  <button data-t="u2">② 形近字・多音字</button>
+  <button data-t="u3">③ 成語</button>
+  <button data-t="u4">④ 詞語替換</button>
+</nav>
+<main>
+
+<!-- ============ 單元一 ============ -->
+<section id="u1" class="on">
+  <div class="bar">
+    <h2>課文心智圖</h2>
+    <div>
+      <button class="btn" onclick="mapAll(false)">全部遮住</button>
+      <button class="btn" onclick="mapAll(true)">全部打開</button>
+    </div>
+  </div>
+  <p class="bar tip" style="margin-top:-8px">先想想看答案，再點 <b style="color:var(--persimmon)">？</b> 框框檢查。可以按「全部遮住」一直重複練習！　<span class="prog" id="mapProg"></span></p>
+
+  <div class="map">
+    <div class="root">小鎮的<br>柿餅節</div>
+    <div class="branches">
+      <div class="top3">
+        <div class="node" style="--c:var(--sky)"><span class="tag">時間</span><span class="blank">秋天</span></div>
+        <div class="node" style="--c:var(--sky)"><span class="tag">地點</span><span class="blank">新埔小鎮</span></div>
+        <div class="node" style="--c:var(--sky)"><span class="tag">主題</span><span class="blank">柿餅節</span>的活動</div>
+      </div>
+
+      <div class="node" style="--c:#c27ac9">
+        <span class="tag">① 聞到 👃</span>
+        一陣一陣的<span class="blank">柿餅香</span>飄了過來
+      </div>
+
+      <div class="node" style="--c:var(--persimmon)">
+        <span class="tag">② 看到 👀</span>
+        <div class="row"><span class="blank">屋前屋後</span>排了很多<span class="blank">柿子</span></div>
+        <div class="row"><span class="sub">遠看</span><span class="arrow">→</span> 在<span class="blank">陽光</span>下一片<span class="blank">金黃色</span></div>
+        <div class="row"><span class="sub">近看</span><span class="arrow">→</span> 一個一個<span class="blank">紅紅</span>的柿子，真是可愛</div>
+      </div>
+
+      <div class="node" style="--c:var(--leaf)">
+        <span class="tag">③ 聽到 👂（爸爸說）</span>
+        <div class="row"><span class="sub">製作的時間</span> 每年 <span class="blank">9</span> 月到 <span class="blank">12</span> 月</div>
+        <div class="row"><span class="sub">製作的方法</span> 用<span class="blank">秋風</span>和<span class="blank">陽光</span>把柿子慢慢<span class="blank">風乾</span></div>
+        <div class="row"><span class="sub">味道</span><span class="blank">又香又甜</span></div>
+      </div>
+
+      <div class="node" style="--c:var(--gold)">
+        <span class="tag">④ 遊客 🧳</span>
+        <div class="row"><span class="sub">從事的活動</span> 1. 吃一吃<span class="blank">客家菜</span>　2. 買<span class="blank">柿餅</span>送給<span class="blank">親朋好友</span></div>
+        <div class="row"><span class="sub">祝福</span> ① 心想「<span class="blank">事</span>」成　② 「<span class="blank">事事</span>」如意</div>
+        <div class="row tip" style="color:var(--muted);font-size:16px">💡「柿」和「事」同音，所以送柿餅就是祝大家心想事成、事事如意！</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 單元二 ============ -->
+<section id="u2">
+  <div class="bar">
+    <h2>形近字選字・多音字判讀</h2>
+    <button class="btn" onclick="document.getElementById('u2p').classList.contains('on')?buildPoly():buildShape()">🔀 重新出題</button>
+  </div>
+  <div class="subtabs">
+    <button data-b="u2s" class="on">✏️ 形近字</button>
+    <button data-b="u2p">🔊 多音字</button>
+  </div>
+  <div class="blk on" id="u2s">
+    <h3>✏️ 形近字（詞語）：選出正確的字</h3>
+    <div id="u2w"></div>
+    <h3>✏️ 形近字（句子）：選出正確的字</h3>
+    <div id="u2a"></div>
+    <div class="done"></div>
+    <div class="score"></div>
+  </div>
+  <div class="blk" id="u2p">
+    <h3>🔊 多音字：點框框，用下面的注音鍵盤打出注音</h3>
+    <div id="u2b"></div>
+    <div class="done"></div>
+    <div class="score"></div>
+  </div>
+</section>
+
+<!-- ============ 單元三 ============ -->
+<section id="u3">
+  <div class="bar">
+    <h2>成語的意思與造句</h2>
+    <button class="btn" onclick="build3()">🔀 重新出題</button>
+  </div>
+  <div class="idioms" id="idiomChips"></div>
+  <h3>📖 意思配對：這是哪一個成語的意思？</h3>
+  <div id="u3a"></div>
+  <h3>📝 造句填空：（　）裡應該填哪一個成語？</h3>
+  <div id="u3b"></div>
+  <div class="done" id="done3"></div>
+  <div class="score" id="score3"></div>
+</section>
+
+<!-- ============ 單元四 ============ -->
+<section id="u4">
+  <div class="bar">
+    <h2>詞語替換，意思一樣嗎？</h2>
+    <button class="btn" onclick="build4()">🔀 重新出題</button>
+  </div>
+  <p class="tip" style="color:var(--muted);font-size:17px;margin-top:-6px">把<span class="dot">畫線的詞</span>換成<span class="swap">框框裡的詞</span>，句子的意思還一樣嗎？</p>
+  <div id="u4a"></div>
+  <div class="done" id="done4"></div>
+  <div class="score" id="score4"></div>
+</section>
+
+</main>
+<div id="kp" class="kp" hidden>
+  <div class="kp-top"><span id="kpWord"></span><button class="btn" data-k="close">完成 ✔</button></div>
+  <div class="kp-keys" id="kpKeys"></div>
+</div>
+
+<script>
+/* ---------- 共用 ---------- */
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));if(typeof closeKp==='function')closeKp();
+  window.scrollTo({top:0});
+});
+function makeQ(container,i,stemHTML,options,answer,explain,quiz){
+  const d=document.createElement('div');d.className='q';
+  d.innerHTML=`<div class="stem"><span class="num">${i}</span>${stemHTML}</div><div class="opts"></div><div class="fb"></div>`;
+  const box=d.querySelector('.opts'),fb=d.querySelector('.fb'),hole=d.querySelector('.hole');
+  const q={el:d,sel:undefined,answered:false,correct:false};
+  let rightOpt;
+  options.forEach(o=>{
+    const b=document.createElement('button');b.className='opt';b.innerHTML=o.label??o;
+    const val=o.value??o, fill=o.fill??val;
+    if(val===answer)rightOpt={b,fill};
+    b.onclick=()=>{
+      if(quiz.submitted)return;
+      box.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel');d.classList.remove('need');
+      q.sel=val;q.answered=true;q.correct=(val===answer);
+      if(hole)hole.textContent=fill;
+      quiz.changed();
+    };
+    box.appendChild(b);
+  });
+  q.grade=()=>{
+    box.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+    const chosen=box.querySelector('.opt.sel');
+    if(q.correct){
+      chosen.classList.add('right');d.classList.add('ok');
+      fb.className='fb ok';fb.innerHTML='✔ 答對了！'+(explain?`　<span style="color:var(--muted)">${explain}</span>`:'');
+    }else{
+      if(chosen)chosen.classList.add('wrong');
+      rightOpt.b.classList.add('right');d.classList.add('no');
+      if(hole)hole.textContent=rightOpt.fill;
+      fb.className='fb no';fb.innerHTML=`✘ 答錯了，正確答案是「${rightOpt.b.innerHTML}」`+(explain?`<br><span style="color:var(--muted)">${explain}</span>`:'');
+    }
+  };
+  quiz.add(q);
+  container.appendChild(d);
+}
+function scorer(scope,total,rebuild){
+  const qs=[];const s=scope.querySelector('.score'),dn=scope.querySelector('.done');
+  const sec=scope;sec.classList.remove('onlywrong');
+  let bar=sec.querySelector('.submitbar');
+  if(!bar){bar=document.createElement('div');bar.className='submitbar';dn.before(bar);}
+  bar.innerHTML=`<button class="btn main big-btn">📮 繳交</button><div class="msg"></div>`;
+  const msg=bar.querySelector('.msg');
+  const quiz={submitted:false,add:q=>qs.push(q),
+    changed(){const n=qs.filter(q=>q.answered).length;s.textContent=`已作答 ${n} / ${total} 題`;msg.textContent='';}};
+  dn.style.display='none';quiz.changed();
+  bar.querySelector('button').onclick=()=>{
+    const left=qs.filter(q=>!q.answered);
+    if(left.length){
+      qs.forEach(q=>q.el.classList.toggle('need',!q.answered));
+      msg.textContent=`還有 ${left.length} 題還沒寫喔！（紅框的題目）寫完再繳交。`;
+      left[0].el.scrollIntoView({behavior:'smooth',block:'center'});return;
+    }
+    quiz.submitted=true;if(typeof closeKp==='function')closeKp();qs.forEach(q=>q.grade());
+    const ok=qs.filter(q=>q.correct).length,wrong=total-ok;
+    bar.style.display='none';
+    s.textContent=`答對 ${ok} / ${total} 題`;
+    dn.style.display='block';
+    dn.innerHTML=(ok===total?'🏆 全部答對！你是柿餅節小達人！':`答對 <b>${ok}</b> 題，答錯 <b style="color:var(--red)">${wrong}</b> 題　得分 <b>${Math.round(ok/total*100)}</b> 分`)+
+      `<div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">`+
+      (wrong?`<button class="btn" data-a="w">👀 只看答錯的題目</button>`:'')+
+      `<button class="btn main" data-a="r">🔀 再做一次</button></div>`;
+    const w=dn.querySelector('[data-a=w]');
+    if(w)w.onclick=()=>{const on=sec.classList.toggle('onlywrong');w.textContent=on?'📋 顯示全部題目':'👀 只看答錯的題目';};
+    dn.querySelector('[data-a=r]').onclick=()=>{rebuild();scope.scrollIntoView({behavior:'smooth'});};
+    dn.scrollIntoView({behavior:'smooth',block:'center'});
+  };
+  bar.style.display='';
+  return quiz;
+}
+
+/* ---------- 單元一：心智圖 ---------- */
+const blanks=[...document.querySelectorAll('#u1 .blank')];
+function mapProg(){const o=blanks.filter(b=>b.classList.contains('open')).length;document.getElementById('mapProg').textContent=`已打開 ${o} / ${blanks.length} 格`;}
+blanks.forEach(b=>b.onclick=()=>{b.classList.toggle('open');mapProg();});
+function mapAll(open){blanks.forEach(b=>b.classList.toggle('open',open));mapProg();}
+mapProg();
+
+/* ---------- 單元二：形近字・多音字 ---------- */
+const shape=[
+ ['秋天到了，小鎮的（　）餅節開始了。',['柿','市'],'柿'],
+ ['媽媽到菜（　）場買青菜。',['柿','市'],'市'],
+ ['爸爸帶我們到新（　）小鎮玩。',['埔','捕','補'],'埔'],
+ ['小花貓在院子裡（　）捉老鼠。',['埔','捕','補'],'捕'],
+ ['哥哥下課後要去（　）習班上課。',['埔','捕','補'],'補'],
+ ['他感冒太久，變成了（　）炎。',['肺','沛'],'肺'],
+ ['睡飽以後，我覺得精神很充（　）。',['肺','沛'],'沛'],
+ ['雨下得很大，（　）此比賽延期了。',['因','困'],'因'],
+ ['這一題好難，把我（　）住了。',['因','困'],'困'],
+ ['我和弟弟來（　）賽跑步。',['此','比'],'比'],
+ ['從（　）以後，他每天都早起。',['此','比'],'此'],
+ ['一個一個紅紅的柿子，真是可（　）。',['愛','受'],'愛'],
+ ['他接（　）了大家的建議。',['愛','受'],'受'],
+ ['每年有很多遊（　）到新埔玩。',['客','容'],'客'],
+ ['姊姊臉上露出開心的笑（　）。',['客','容'],'容'],
+ ['爸爸到市場（　）了一盒柿餅。',['買','賣'],'買'],
+ ['阿姨在路邊（　）柿餅給遊客。',['買','賣'],'賣'],
+ ['我們把柿餅送給（　）朋好友。',['親','新'],'親'],
+ ['開學了，我拿到（　）課本。',['親','新'],'新'],
+];
+// 詞語選字：(選項)[注音] = 空格；字[注音] = 一般字；| 後面是答案（多格用逗號）
+const words=[
+'(市柿沛肺)[]餅[ㄅㄧㄥˇ]節[ㄐㄧㄝˊ]|柿','城[ㄔㄥˊ](市柿沛肺)[]|市','充[ㄔㄨㄥ](市柿沛肺)[]|沛','(市柿沛肺)[]子[ㄗ˙]|柿',
+'(市柿沛肺)[]場[ㄔㄤˇ]|市','(市柿沛肺)[]病[ㄅㄧㄥˋ]|肺','豐[ㄈㄥ](市柿沛肺)[]|沛','(市柿沛肺)[]炎[ㄧㄢˊ]|肺',
+'(甫捕補埔)[]捉[ㄓㄨㄛ]|捕','杜[ㄉㄨˋ](甫捕補埔)[]|甫','平[ㄆㄧㄥˊ](甫捕補埔)[]族[ㄗㄨˊ]|埔','(甫捕補埔)[]手[ㄕㄡˇ]|捕',
+'驚[ㄐㄧㄥ]魂[ㄏㄨㄣˊ](甫捕補埔)[]定[ㄉㄧㄥˋ]|甫','(甫捕補埔)[]習[ㄒㄧˊ]|補','(甫捕補埔)[]給[ㄐㄧˇ]|補','(甫捕補埔)[]交[ㄐㄧㄠ]|補','新[ㄒㄧㄣ](甫捕補埔)[]|埔',
+'(因困囚回圃)[]此[ㄘˇ]|因','(因困囚回圃)[]犯[ㄈㄢˋ]|囚','受[ㄕㄡˋ](因困囚回圃)[]|困','(因困囚回圃)[]家[ㄐㄧㄚ]|回',
+'(因困囚回圃)[]為[ㄨㄟˋ]|因','(因困囚回圃)[]素[ㄙㄨˋ]|因','原[ㄩㄢˊ](因困囚回圃)[]|因','菜[ㄘㄞˋ](因困囚回圃)[]|圃',
+'(因困囚回圃)[]苦[ㄎㄨˇ]|困','花[ㄏㄨㄚ](因困囚回圃)[]|圃','(因困囚回圃)[ㄧㄣ]此[]|因',
+'(北比此)[]賽[ㄙㄞˋ]|比','東[ㄉㄨㄥ]西[ㄒㄧ]南[ㄋㄢˊ](北比此)[]|北','從[ㄘㄨㄥˊ](北比此)[]|此','對[ㄉㄨㄟˋ](北比此)[]|比',
+'可[ㄎㄜˇ](受愛)[]|愛','接[ㄐㄧㄝ](受愛)[]|受','喜[ㄒㄧˇ](受愛)[]|愛','忍[ㄖㄣˇ](受愛)[]|受',
+'笑[ㄒㄧㄠˋ](完家容客定室)[]|容','(完家容客定室)[]成[ㄔㄥˊ]|完','穩[ㄨㄣˇ](完家容客定室)[]|定','遊[ㄧㄡˊ](完家容客定室)[]|客',
+'教[ㄐㄧㄠˋ](完家容客定室)[]|室','旅[ㄌㄩˇ](完家容客定室)[]|客','包[ㄅㄠ](完家容客定室)[]|容',
+'拍[ㄆㄞ](貝賣買)[]|賣','(貝賣買)[]殼[ㄎㄜˊ]|貝','採[ㄘㄞˇ](貝賣買)[]|買','叫[ㄐㄧㄠˋ](貝賣買)[]|賣','(貝賣買)[](貝賣買)[]|買,賣','(貝賣買)[]力[ㄌㄧˋ]|賣',
+'(新親薪)[]年[ㄋㄧㄢˊ]|新','(新親薪)[]朋[ㄆㄥˊ]|親','(新親薪)[]水[ㄕㄨㄟˇ]|薪','(新親薪)[]人[ㄖㄣˊ]|親','(新親薪)[]娘[ㄋㄧㄤˊ]|新',
+'接[ㄐㄧㄝ](近進)[]|近','(近進)[]步[ㄅㄨˋ]|進','靠[ㄎㄠˋ](近進)[]|近','(近進)[]出[ㄔㄨ]|進','前[ㄑㄧㄢˊ](近進)[]|進',
+'(近進)[]海[ㄏㄞˇ]|近','走[ㄗㄡˇ](近進)[]|進','(近進)[]去[ㄑㄩˋ]|進','最[ㄗㄨㄟˋ](近進)[]|近','(近進)[]期[ㄑㄧˊ]|近',
+];
+// 多音字：要打注音的字用 {字}
+const poly=[
+ ['遙[ㄧㄠˊ]{遠}','ㄩㄢˇ','遙遠：距離很長'],
+ ['敬[ㄐㄧㄥˋ]鬼[ㄍㄨㄟˇ]神[ㄕㄣˊ]而[ㄦˊ]{遠}之[ㄓ]','ㄩㄢˋ','這裡的「遠」是「離開、保持距離」'],
+ ['{遠}方[ㄈㄤ]','ㄩㄢˇ','遠方：很遠的地方'],
+ ['風[ㄈㄥ]{乾}','ㄍㄢ','風乾：讓風把水分吹乾'],
+ ['烘[ㄏㄨㄥ]{乾}','ㄍㄢ','烘乾：用熱氣把水分烤乾'],
+ ['{乾}坤[ㄎㄨㄣ]','ㄑㄧㄢˊ','乾坤：指天和地'],
+ ['{乾}淨[ㄐㄧㄥˋ]','ㄍㄢ','乾淨：清潔、沒有髒東西'],
+];
+const fixZy=z=>{z=(z||'').replace(/\s/g,'').replace(/一/g,'ㄧ').replace(/ˉ/g,'');if(z.includes('˙'))z='˙'+z.replace(/˙/g,'');return z;};
+const zc=(ch,zy,cls='')=>`<span class="zc ${cls}"><span class="ch">${ch}</span><span class="zy">${fixZy(zy)}</span></span>`;
+function parseWord(str){
+  const [body,ans]=str.split('|');const ansArr=ans.split(',');const parts=[];let k=0;
+  const re=/\(([^)]*)\)\[([^\]]*)\]|([^\s(\[])\[([^\]]*)\]/g;let m;
+  while((m=re.exec(body))){ if(m[1]!==undefined)parts.push({blank:true,opts:[...m[1]],zy:m[2],ans:ansArr[k++]}); else parts.push({ch:m[3],zy:m[4]}); }
+  return parts;
+}
+function makeWordQ(container,i,str,quiz){
+  const parts=parseWord(str),blanks=parts.filter(p=>p.blank),multi=blanks.length>1;
+  const d=document.createElement('div');d.className='q';
+  let bi=0;
+  const stem=parts.map(p=>p.blank?zc(`<span class="hole2">${multi?'①②③'[bi++]:'？'}</span>`,p.zy,'blankc'):zc(p.ch,p.zy)).join('');
+  d.innerHTML=`<div class="stem"><span class="num">${i}</span><span class="word">${stem}</span></div><div class="rows"></div><div class="fb"></div>`;
+  const holes=d.querySelectorAll('.hole2'),rows=d.querySelector('.rows'),fb=d.querySelector('.fb');
+  const q={el:d,answered:false,correct:false};
+  blanks.forEach((p,j)=>{
+    p.sel=null;
+    const r=document.createElement('div');r.className='opts';
+    if(multi)r.innerHTML=`<span class="rowlab">${'①②③'[j]}</span>`;
+    p.opts.forEach(o=>{
+      const b=document.createElement('button');b.className='opt';b.textContent=o;b.dataset.v=o;
+      b.onclick=()=>{ if(quiz.submitted)return;
+        r.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');d.classList.remove('need');
+        p.sel=o;holes[j].textContent=o;holes[j].classList.add('filled');
+        q.answered=blanks.every(x=>x.sel);q.correct=blanks.every(x=>x.sel===x.ans);quiz.changed(); };
+      r.appendChild(b);
+    });
+    p.row=r;rows.appendChild(r);
+  });
+  q.grade=()=>{
+    blanks.forEach((p,j)=>{
+      p.row.querySelectorAll('.opt').forEach(b=>{b.disabled=true;
+        if(b.dataset.v===p.ans)b.classList.add('right'); else if(b.dataset.v===p.sel)b.classList.add('wrong');});
+      holes[j].textContent=p.ans;holes[j].classList.add(p.sel===p.ans?'hok':'hno');
+    });
+    d.classList.add(q.correct?'ok':'no');
+    fb.className='fb '+(q.correct?'ok':'no');
+    fb.innerHTML=q.correct?'✔ 答對了！':`✘ 答錯了，正確答案是「${blanks.map(p=>p.ans).join('、')}」`;
+  };
+  quiz.add(q);container.appendChild(d);
+}
+function makePolyQ(container,i,[str,ans,ex],quiz){
+  const d=document.createElement('div');d.className='q';
+  let target='';
+  const stem=str.replace(/\{(.)\}|(.)\[([^\]]*)\]/g,(m,t,c,z)=>{ if(t){target=t;return `<span class="zc tgt"><span class="ch big">${t}</span><input class="zyin" inputmode="none" autocomplete="off" placeholder="點我"></span>`;} return zc(c,z); });
+  d.innerHTML=`<div class="stem"><span class="num">${i}</span><span class="word">${stem}</span></div><div class="fb"></div>`;
+  const inp=d.querySelector('.zyin'),fb=d.querySelector('.fb');
+  const q={el:d,answered:false,correct:false};
+  const upd=()=>{const v=fixZy(inp.value);q.answered=v.length>0;q.correct=v===fixZy(ans);if(q.answered)d.classList.remove('need');quiz.changed();};
+  inp.addEventListener('input',upd);inp._upd=upd;
+  inp.addEventListener('focus',()=>{ if(quiz.submitted){inp.blur();return;} openKp(inp,target,str); });
+  q.grade=()=>{
+    inp.readOnly=true;inp.classList.add(q.correct?'iok':'ino');
+    d.classList.add(q.correct?'ok':'no');fb.className='fb '+(q.correct?'ok':'no');
+    fb.innerHTML=(q.correct?'✔ 答對了！':`✘ 答錯了，正確的注音是「<span class="zy-inline">${ans}</span>」`)+`　<span style="color:var(--muted)">${ex}</span>`;
+  };
+  quiz.add(q);container.appendChild(d);
+}
+/* 注音鍵盤 */
+const KEYS=['ㄅㄆㄇㄈ','ㄉㄊㄋㄌ','ㄍㄎㄏ','ㄐㄑㄒ','ㄓㄔㄕㄖ','ㄗㄘㄙ','ㄧㄨㄩ','ㄚㄛㄜㄝ','ㄞㄟㄠㄡ','ㄢㄣㄤㄥㄦ'];
+let kpTarget=null;
+(function(){
+  const box=document.getElementById('kpKeys');
+  let h=KEYS.map(g=>`<div class="kg">${[...g].map(c=>`<button data-c="${c}">${c}</button>`).join('')}</div>`).join('');
+  h+=`<div class="kg tones"><button data-c="" class="t">一聲</button><button data-c="ˊ" class="t">ˊ</button><button data-c="ˇ" class="t">ˇ</button><button data-c="ˋ" class="t">ˋ</button><button data-c="˙" class="t">˙</button><button data-k="bs" class="t">⌫</button><button data-k="clr" class="t">清除</button></div>`;
+  box.innerHTML=h;
+  document.getElementById('kp').addEventListener('mousedown',e=>e.preventDefault());
+  document.getElementById('kp').addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b||!kpTarget)return;
+    if(b.dataset.k==='close'){closeKp();return;}
+    if(b.dataset.k==='bs')kpTarget.value=[...kpTarget.value].slice(0,-1).join('');
+    else if(b.dataset.k==='clr')kpTarget.value='';
+    else if(b.dataset.c!==undefined)kpTarget.value+=b.dataset.c;
+    kpTarget._upd();
+  });
+})();
+function openKp(inp,t){
+  if(kpTarget)kpTarget.classList.remove('active');
+  kpTarget=inp;inp.classList.add('active');
+  const kp=document.getElementById('kp');kp.hidden=false;document.body.classList.add('kpon');
+  document.getElementById('kpWord').innerHTML=`正在輸入：「<b>${t}</b>」的注音`;
+  setTimeout(()=>inp.scrollIntoView({behavior:'smooth',block:'center'}),50);
+}
+function closeKp(){ if(kpTarget){kpTarget.classList.remove('active');kpTarget.blur();} kpTarget=null;document.getElementById('kp').hidden=true;document.body.classList.remove('kpon'); }
+function buildShape(){
+  const W=document.getElementById('u2w'),A=document.getElementById('u2a');W.innerHTML='';A.innerHTML='';
+  const done=scorer(document.getElementById('u2s'),words.length+shape.length,buildShape);let i=1;
+  shuffle(words).forEach(w=>makeWordQ(W,i++,w,done));
+  shuffle(shape).forEach(([s,o,a])=>makeQ(A,i++,s.replace('（　）','<span class="hole">　</span>'),shuffle(o),a,'',done));
+}
+function buildPoly(){
+  closeKp();
+  const B=document.getElementById('u2b');B.innerHTML='';
+  const done=scorer(document.getElementById('u2p'),poly.length,buildPoly);let i=1;
+  shuffle(poly).forEach(p=>makePolyQ(B,i++,p,done));
+}
+function build2(){buildShape();buildPoly();}
+document.querySelectorAll('.subtabs button').forEach(b=>b.onclick=()=>{
+  closeKp();
+  document.querySelectorAll('.subtabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('#u2 .blk').forEach(x=>x.classList.toggle('on',x.id===b.dataset.b));
+});
+
+/* ---------- 單元三：成語 ---------- */
+const ID={A:'節外生枝',B:'平分秋色',C:'一見如故',D:'回心轉意'};
+const meanings=[['改變原來的心意和態度。','D'],['比喻在事件外又另外產生事端。','A'],['第一次見面就相處融洽，像老朋友一樣。','C'],['形容兩者一樣出色，分不出高下。','B']];
+const sents=[
+ ['姊姊聽了媽媽的勸告之後，終於（　），認真準備考試。','D'],
+ ['這兩篇文章（　），因此並列第一。','B'],
+ ['他們兩人都喜愛電影，才剛認識就（　），聊個不停。','C'],
+ ['這消息越多人知道，越會（　）。','A'],
+ ['哥哥和弟弟在歌唱比賽中的表現可說是（　），最後雙雙獲得特優獎。','B'],
+ ['事情本來進行得很順利，沒想到突發的變故讓過程（　）。','A'],
+ ['看到大家真誠的邀請，他終於（　），決定重新加入球隊一起訓練。','D'],
+ ['我和新來的轉學生相談甚歡，才剛認識就（　），變成了好朋友。','C'],
+ ['兩家公司的產品在市場上的占有率（　），競爭十分激烈。','B'],
+ ['兩位朋友雖然是初次合作，但由於理念相同，感到（　）。','C'],
+ ['雖然他之前態度堅決，但大家不放棄努力，希望他能（　），參加這個計畫。','D'],
+ ['為了避免（　），我們必須在簽約前把所有細節確認清楚。','A'],
+ ['原本只是個小小的意見不合，經過大家傳播之後卻（　），演變成嚴重的誤會。','A'],
+ ['經過媽媽細心的勸導，原本生氣離家的哥哥終於（　），向大家道歉。','D'],
+ ['他們因為共同的興趣而結識，彼此交流起來（　），聊得停不下來。','C'],
+ ['這兩位選手的實力相當，在決賽中表現得（　），難分高下。','B'],
+];
+document.getElementById('idiomChips').innerHTML=Object.values(ID).map(v=>`<span class="chip">${v}</span>`).join('');
+function build3(){
+  const A=document.getElementById('u3a'),B=document.getElementById('u3b');A.innerHTML='';B.innerHTML='';
+  const done=scorer(document.getElementById('u3'),meanings.length+sents.length,build3);let i=1;
+  const opts=()=>shuffle(Object.keys(ID)).map(k=>({label:ID[k],value:k,fill:ID[k]}));
+  shuffle(meanings).forEach(([m,a])=>makeQ(A,i++,m,opts(),a,'',done));
+  shuffle(sents).forEach(([s,a])=>makeQ(B,i++,s.replace('（　）','<span class="hole">　　</span>'),opts(),a,'',done));
+}
+
+/* ---------- 單元四：詞語替換 ---------- */
+// [前文, 原詞, 後文, 替換詞, 一樣嗎, 說明]
+const subs=[
+ ['','原本','靜靜的新埔小鎮，變得熱鬧起來。','本來',true,'「原本」和「本來」都是「一開始的時候」。'],
+ ['柿餅節開始了，','因此','小鎮變得熱鬧起來。','所以',true,'「因此」和「所以」都表示事情的結果。'],
+ ['柿餅節開始了，','因此','小鎮變得熱鬧起來。','但是',false,'「但是」表示轉折，和「因此」意思不一樣。'],
+ ['原本靜靜的小鎮，變得','熱鬧','起來。','冷清',false,'「熱鬧」是人很多、很有活力；「冷清」剛好相反。'],
+ ['一個一個紅紅的柿子，真是','可愛','。','討人喜愛',true,'「可愛」就是討人喜愛。'],
+ ['','遠看','一籃一籃的柿子，在陽光下一片金黃色。','近看',false,'「遠看」是從遠的地方看，「近看」是從近的地方看。'],
+ ['秋風和陽光，會把柿子','慢慢','風乾。','快快',false,'「慢慢」和「快快」意思相反。'],
+ ['有很多','遊客','會到新埔玩。','旅客',true,'「遊客」和「旅客」都是出門遊玩、旅行的人。'],
+ ['買柿餅送給','親朋好友','。','親戚朋友',true,'「親朋好友」就是親戚和朋友。'],
+ ['祝大家','事事','如意！','萬事',true,'「事事如意」和「萬事如意」都是每件事都順心。'],
+ ['','走進','小鎮，一陣一陣的柿餅香飄了過來。','走出',false,'「走進」是進去，「走出」是出來，方向相反。'],
+ ['屋前屋後都排了','很多','柿子。','許多',true,'「很多」和「許多」都是數量多。'],
+ ['','一陣一陣','的柿餅香飄了過來。','一陣陣',true,'「一陣陣」是「一陣一陣」的簡單說法。'],
+ ['','每年','九月到十二月，秋風會把柿子慢慢風乾。','今年',false,'「每年」是年年都這樣，「今年」只有這一年。'],
+ ['','秋天','來了，柿餅節的活動開始了。','春天',false,'季節換了，意思就不一樣。'],
+ ['原本','靜靜','的新埔小鎮。','安安靜靜',true,'「靜靜」和「安安靜靜」都是沒有聲音、很安靜。'],
+];
+function build4(){
+  const A=document.getElementById('u4a');A.innerHTML='';
+  const done=scorer(document.getElementById('u4'),subs.length,build4);let i=1;
+  shuffle(subs).forEach(([pre,w,post,r,same,ex])=>{
+    const stem=`${pre}<span class="dot">${w}</span>${post}<br><span style="font-size:18px;color:var(--muted)">「${w}」換成 <span class="swap">${r}</span></span>`;
+    makeQ(A,i++,stem,[{label:'⭕ 意思一樣',value:true},{label:'❌ 意思不一樣',value:false}],same,ex,done);
+  });
+}
+build2();build3();build4();
+</script>
+</body>
+</html>
