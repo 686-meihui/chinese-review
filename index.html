@@ -113,6 +113,21 @@ body.kpon .score{display:none}
 .subtabs button{font:inherit;font-size:19px;padding:6px 22px;border:2px solid var(--sky);border-bottom:none;background:#fff;color:var(--sky);border-radius:12px 12px 0 0;margin-right:6px;cursor:pointer}
 .subtabs button.on{background:var(--sky);color:#fff}
 .blk{display:none}.blk.on{display:block}
+.text{background:#fffdf8;border:2px solid var(--line);border-radius:16px;padding:16px 22px;font-size:25px;line-height:2.3}
+.text .para{text-indent:2em;margin:0 0 6px}
+.text .stanza{margin:0 0 1.2em}
+.tb{font:inherit;font-size:24px;min-width:1.6em;height:1.5em;line-height:1.2;padding:0 4px;margin:0 2px;vertical-align:middle;border:2.5px dashed var(--persimmon);border-radius:8px;background:var(--persimmon-soft);color:var(--ink);cursor:pointer;text-indent:0}
+.tb.de{border-color:var(--sky);background:var(--sky-soft)}
+.tb.filled{border-style:solid;background:var(--gold-soft);border-color:var(--gold);font-weight:700}
+.tb.active{outline:4px solid var(--sky);outline-offset:1px}
+.tb.tok{border:2.5px solid var(--leaf);background:var(--leaf-soft);color:var(--leaf)}
+.tb.tno{border:2.5px solid var(--red);background:var(--red-soft);color:var(--red);text-decoration:line-through}
+.tb.need,.q.need .tb{border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+.tb.demo{display:inline-block;cursor:default;height:1.3em;font-size:16px}
+.fix{display:inline-flex;align-items:center;gap:2px;color:var(--leaf);font-weight:700;font-size:24px;border:2.5px solid var(--leaf);background:var(--leaf-soft);border-radius:8px;padding:0 6px 0 4px;margin:0 3px;text-indent:0;vertical-align:middle;line-height:1.4}
+.fix::before{content:'正確';font-size:13px;font-weight:400;background:var(--leaf);color:#fff;border-radius:5px;padding:0 4px;margin-right:2px}
+.tstat{color:var(--muted);font-size:17px;margin:6px 4px 0;text-align:right}
+.onlywrong .tb.tok{border-color:var(--line);background:transparent;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -121,7 +136,8 @@ body.kpon .score{display:none}
   <p>二年級上學期國語・互動複習</p>
 </header>
 <nav id="tabs">
-  <button data-t="u1" class="on">① 課文心智圖</button>
+  <button data-t="u0" class="on">📖 課文</button>
+  <button data-t="u1">① 課文心智圖</button>
   <button data-t="u2">② 形近字・多音字</button>
   <button data-t="u3">③ 成語</button>
   <button data-t="u4">④ 詞語替換</button>
@@ -129,7 +145,22 @@ body.kpon .score{display:none}
 <main>
 
 <!-- ============ 單元一 ============ -->
-<section id="u1" class="on">
+<section id="u0" class="on">
+  <div class="bar">
+    <h2>課文挑戰</h2>
+    <button class="btn" onclick="build0()">🔀 重新開始</button>
+  </div>
+  <p class="tip" style="color:var(--muted);font-size:17px;margin-top:-6px">讀一讀課文，點 <span class="tb demo">　</span> 框框，選出正確的「<b>的</b>／<b>得</b>」和<b>標點符號</b>。讀完再回答下面的問題，全部寫完按繳交。</p>
+  <h3 id="u0title"></h3>
+  <div class="text" id="u0text"></div>
+  <div class="tstat" id="u0stat"></div>
+  <h3>🤔 讀完想一想</h3>
+  <div id="u0q"></div>
+  <div class="done"></div>
+  <div class="score"></div>
+</section>
+
+<section id="u1">
   <div class="bar">
     <h2>課文心智圖</h2>
     <div>
@@ -231,6 +262,10 @@ body.kpon .score{display:none}
 </section>
 
 </main>
+<div id="cp" class="kp" hidden>
+  <div class="kp-top"><span id="cpTitle"></span><button class="btn" data-k="close">關閉</button></div>
+  <div class="kp-keys" id="cpKeys"></div>
+</div>
 <div id="kp" class="kp" hidden>
   <div class="kp-top"><span id="kpWord"></span><button class="btn" data-k="close">完成 ✔</button></div>
   <div class="kp-keys" id="kpKeys"></div>
@@ -241,7 +276,7 @@ body.kpon .score{display:none}
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
-  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));if(typeof closeKp==='function')closeKp();
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));if(typeof closeKp==='function')closeKp();if(typeof closeCp==='function')closeCp();
   window.scrollTo({top:0});
 });
 function makeQ(container,i,stemHTML,options,answer,explain,quiz){
@@ -297,7 +332,7 @@ function scorer(scope,total,rebuild){
       msg.textContent=`還有 ${left.length} 題還沒寫喔！（紅框的題目）寫完再繳交。`;
       left[0].el.scrollIntoView({behavior:'smooth',block:'center'});return;
     }
-    quiz.submitted=true;if(typeof closeKp==='function')closeKp();qs.forEach(q=>q.grade());
+    quiz.submitted=true;if(typeof closeKp==='function')closeKp();if(typeof closeCp==='function')closeCp();qs.forEach(q=>q.grade());
     const ok=qs.filter(q=>q.correct).length,wrong=total-ok;
     bar.style.display='none';
     s.textContent=`答對 ${ok} / ${total} 題`;
@@ -534,7 +569,76 @@ function build4(){
     makeQ(A,i++,stem,[{label:'⭕ 意思一樣',value:true},{label:'❌ 意思不一樣',value:false}],same,ex,done);
   });
 }
-build2();build3();build4();
+
+/* ---------- 課文挑戰 ---------- */
+// {的}{得} = 的/得 空格；[、] = 標點空格（括號內是正確答案）
+const LESSON={
+  title:'六、小鎮的柿餅節',
+  genre:'記敘文',   // 若是「新詩」，會自動多出押韻、分幾節的題目
+  paras:[
+    '秋天來了，柿餅節{的}活動開始了，原本靜靜{的}新埔小鎮，因此變{得}熱鬧起來。',
+    '走進小鎮，一陣一陣{的}柿餅香飄了過來。我看到做柿餅{的}人家，屋前屋後都排了很多柿子，遠看一籃一籃{的}柿子，在陽光下一片金黃色[；]近看一個一個紅紅{的}柿子，真是可愛。',
+    '爸爸說，每年九月到十二月，這裡{的}秋風和陽光，會把柿子慢慢風乾，變成又香又甜{的}柿餅。',
+    '每年柿餅節，有很多遊客會到新埔玩，除了吃一吃這裡{的}客家菜，也會買柿餅送給親朋好友，祝大家心想[「]事[」]成[、][「]事事[」]如意[！]',
+  ],
+  questions:[
+    ['這一課是什麼文體？',['記敘文','新詩','說明文','書信'],'記敘文','課文用一段一段的文字，記下作者在柿餅節看到、聞到、聽到的事，是記敘文。'],
+    ['這一課是用第幾人稱寫的？',['第一人稱','第二人稱','第三人稱'],'第一人稱','課文裡用「我」來說：「我看到做柿餅的人家」，所以是第一人稱。'],
+    ['這一課的文旨（主要想告訴我們的事）是什麼？',
+      ['介紹新埔小鎮熱鬧的柿餅節，和柿餅帶給大家的祝福','說明怎麼種出又大又紅的柿子樹','描寫爸爸在小鎮賣柿餅很辛苦','提醒大家柿餅很甜，不能吃太多'],
+      '介紹新埔小鎮熱鬧的柿餅節，和柿餅帶給大家的祝福',''],
+    ['這一課共分成幾段？',['三段','四段','五段','六段'],'四段','每一段開頭都會空兩格，數一數共有四段。'],
+  ],
+  poem:null, // 新詩用：{rhyme:true/false, rhymeNote:'押ㄤ韻…', stanzas:4}
+};
+const DE_OPTS=['的','得'],PUNCT_OPTS=['，','。','、','；','：','？','！','「','」','——'];
+let cpTarget=null;
+function openCp(btn,opts,title,onPick){
+  cpTarget=btn;document.querySelectorAll('.tb.active').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('cpTitle').textContent=title;
+  const k=document.getElementById('cpKeys');k.innerHTML='';
+  opts.forEach(o=>{const b=document.createElement('button');b.textContent=o;b.className=o.length>1?'t':'';b.onclick=()=>{onPick(o);closeCp();};k.appendChild(b);});
+  document.getElementById('cp').hidden=false;document.body.classList.add('kpon');
+  setTimeout(()=>btn.scrollIntoView({behavior:'smooth',block:'center'}),50);
+}
+function closeCp(){document.getElementById('cp').hidden=true;document.body.classList.remove('kpon');document.querySelectorAll('.tb.active').forEach(x=>x.classList.remove('active'));cpTarget=null;}
+document.querySelector('#cp [data-k=close]').onclick=closeCp;
+function build0(){
+  closeCp();
+  const L=LESSON,T=document.getElementById('u0text'),Q=document.getElementById('u0q');T.innerHTML='';Q.innerHTML='';
+  document.getElementById('u0title').textContent=L.title;
+  const qs=[...L.questions];
+  if(L.genre==='新詩'&&L.poem){
+    qs.push(['這首新詩有沒有押韻？',['有押韻','沒有押韻'],L.poem.rhyme?'有押韻':'沒有押韻',L.poem.rhymeNote||'']);
+    qs.push(['這首新詩共分成幾節？',['兩節','三節','四節','五節','六節'],['','一節','兩節','三節','四節','五節','六節'][L.poem.stanzas],'新詩的一「節」，就像文章的一段，節和節中間會空一行。']);
+  }
+  let nBlank=0;L.paras.forEach(p=>nBlank+=(p.match(/\{|\[/g)||[]).length);
+  const done=scorer(document.getElementById('u0'),nBlank+qs.length,build0);
+  const stat=document.getElementById('u0stat');
+  const blanksQ=[];
+  const updStat=()=>{const f=blanksQ.filter(q=>q.answered).length;stat.textContent=`課文空格：已填 ${f} / ${blanksQ.length} 格`;};
+  L.paras.forEach(p=>{
+    const para=document.createElement(L.genre==='新詩'?'div':'p');para.className=L.genre==='新詩'?'stanza':'para';
+    const html=p.replace(/\{(.)\}|\[([^\]]+)\]/g,(m,de,pu)=>`<button class="tb ${de?'de':'pu'}" data-a="${de||pu}">　</button>`).replace(/\n/g,'<br>');
+    para.innerHTML=html;T.appendChild(para);
+  });
+  T.querySelectorAll('.tb').forEach(b=>{
+    const isDe=b.classList.contains('de'),ans=b.dataset.a;
+    const q={el:b,answered:false,correct:false,val:null};
+    b.onclick=()=>{ if(done.submitted)return;
+      openCp(b,isDe?DE_OPTS:PUNCT_OPTS,isDe?'選「的」還是「得」？':'選出正確的標點符號',o=>{
+        q.val=o;b.textContent=o;b.classList.add('filled');b.classList.remove('need');
+        q.answered=true;q.correct=(o===ans);updStat();done.changed();});
+    };
+    q.grade=()=>{b.disabled=true;b.classList.add(q.correct?'tok':'tno');
+      if(!q.correct)b.insertAdjacentHTML('afterend',`<span class="fix">${ans}</span>`);};
+    blanksQ.push(q);done.add(q);
+  });
+  updStat();
+  qs.forEach(([stem,opts,a,ex],j)=>makeQ(Q,j+1,stem,opts,a,ex,done));
+}
+
+build0();build2();build3();build4();
 </script>
 </body>
 </html>
