@@ -128,6 +128,30 @@ body.kpon .score{display:none}
 .fix::before{content:'正確';font-size:13px;font-weight:400;background:var(--leaf);color:#fff;border-radius:5px;padding:0 4px;margin-right:2px}
 .tstat{color:var(--muted);font-size:17px;margin:6px 4px 0;text-align:right}
 .onlywrong .tb.tok{border-color:var(--line);background:transparent;color:var(--ink)}
+.reward-btn{font:inherit;font-size:18px;border:2px solid var(--gold);background:var(--gold-soft);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.reward-btn.gold{background:var(--gold);color:#fff}
+.reward-btn.bump{animation:bump .6s}
+@keyframes bump{30%{transform:scale(1.25)}60%{transform:scale(.95)}}
+.star{display:inline-block;color:#e4dccf;font-size:44px;margin:0 3px;line-height:1}
+.star.on{color:var(--gold);text-shadow:0 2px 0 #c98e12}
+.stars-line .star{font-size:36px}
+.star.sm{font-size:24px;margin:0 1px}
+.star.pop{font-size:64px;transform:scale(0);animation:pop .5s forwards}
+@keyframes pop{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+.modal{position:fixed;inset:0;background:rgba(60,40,20,.45);z-index:50;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.modal[hidden]{display:none}
+.mbox{background:#fff;border-radius:22px;padding:22px 26px;text-align:center;max-width:min(92vw,460px);max-height:90vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.25);animation:pop .35s;position:relative;z-index:2}
+.m-unit{color:var(--muted);font-size:18px}
+.m-title{font-size:26px;font-weight:700;color:var(--persimmon);margin:6px 0}
+.m-sub{font-size:18px;color:var(--ink);margin:4px 0}
+.trophy{font-size:90px;line-height:1.1;animation:pop .6s .9s both, shine 1.6s 1.5s infinite}
+.trophy.big{font-size:120px;animation:pop .6s both, shine 1.6s .6s infinite}
+@keyframes shine{50%{transform:scale(1.08) rotate(-4deg);filter:drop-shadow(0 0 14px #ffd75e)}}
+.shelf{text-align:left;margin:10px 0}
+.shelf-row{display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px dashed var(--line)}
+.shelf-row .sn{flex:1;font-size:19px}.shelf-row .st{width:28px;font-size:24px}
+.cf{position:fixed;top:-12px;width:10px;height:16px;border-radius:2px;z-index:1;animation:fall linear forwards}
+@keyframes fall{to{top:105vh;transform:rotate(720deg)}}
 </style>
 </head>
 <body>
@@ -141,6 +165,7 @@ body.kpon .score{display:none}
   <button data-t="u2">② 形近字・多音字</button>
   <button data-t="u3">③ 成語</button>
   <button data-t="u4">④ 詞語替換</button>
+  <button id="rewardBtn" class="reward-btn" onclick="showShelf()">🏅 我的星星 <b id="starTotal">0</b> / 15</button>
 </nav>
 <main>
 
@@ -262,6 +287,7 @@ body.kpon .score{display:none}
 </section>
 
 </main>
+<div id="modal" class="modal" hidden><div class="mbox" id="mbox"></div></div>
 <div id="cp" class="kp" hidden>
   <div class="kp-top"><span id="cpTitle"></span><button class="btn" data-k="close">關閉</button></div>
   <div class="kp-keys" id="cpKeys"></div>
@@ -274,8 +300,8 @@ body.kpon .score{display:none}
 <script>
 /* ---------- 共用 ---------- */
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
+document.querySelectorAll('#tabs button[data-t]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#tabs button[data-t]').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));if(typeof closeKp==='function')closeKp();if(typeof closeCp==='function')closeCp();
   window.scrollTo({top:0});
 });
@@ -304,7 +330,7 @@ function makeQ(container,i,stemHTML,options,answer,explain,quiz){
     const chosen=box.querySelector('.opt.sel');
     if(q.correct){
       chosen.classList.add('right');d.classList.add('ok');
-      fb.className='fb ok';fb.innerHTML='✔ 答對了！'+(explain?`　<span style="color:var(--muted)">${explain}</span>`:'');
+      fb.className='fb ok';fb.innerHTML='✔ 答對了！⭐'+(explain?`　<span style="color:var(--muted)">${explain}</span>`:'');
     }else{
       if(chosen)chosen.classList.add('wrong');
       rightOpt.b.classList.add('right');d.classList.add('no');
@@ -337,10 +363,14 @@ function scorer(scope,total,rebuild){
     bar.style.display='none';
     s.textContent=`答對 ${ok} / ${total} 題`;
     dn.style.display='block';
-    dn.innerHTML=(ok===total?'🏆 全部答對！你是柿餅節小達人！':`答對 <b>${ok}</b> 題，答錯 <b style="color:var(--red)">${wrong}</b> 題　得分 <b>${Math.round(ok/total*100)}</b> 分`)+
+    const pct=Math.round(ok/total*100),st=starsFor(pct),best=saveStars(scope.id,st);
+    dn.innerHTML=`<div class="stars-line">${starHTML(st)}</div>`+
+      (ok===total?'🏆 全部答對！你是柿餅節小達人！':`答對 <b>${ok}</b> 題，答錯 <b style="color:var(--red)">${wrong}</b> 題　得分 <b>${pct}</b> 分`)+
+      `<div class="tip" style="font-size:16px;color:var(--muted)">${st<3?'90 分以上就能拿到 3 顆星喔！':''}${best.improved?'　✨ 打破自己的紀錄！':''}</div>`+
       `<div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">`+
       (wrong?`<button class="btn" data-a="w">👀 只看答錯的題目</button>`:'')+
       `<button class="btn main" data-a="r">🔀 再做一次</button></div>`;
+    celebrate(st,ok===total,pct,UNIT_NAMES[scope.id]||'');
     const w=dn.querySelector('[data-a=w]');
     if(w)w.onclick=()=>{const on=sec.classList.toggle('onlywrong');w.textContent=on?'📋 顯示全部題目':'👀 只看答錯的題目';};
     dn.querySelector('[data-a=r]').onclick=()=>{rebuild();scope.scrollIntoView({behavior:'smooth'});};
@@ -445,7 +475,7 @@ function makeWordQ(container,i,str,quiz){
     });
     d.classList.add(q.correct?'ok':'no');
     fb.className='fb '+(q.correct?'ok':'no');
-    fb.innerHTML=q.correct?'✔ 答對了！':`✘ 答錯了，正確答案是「${blanks.map(p=>p.ans).join('、')}」`;
+    fb.innerHTML=q.correct?'✔ 答對了！⭐':`✘ 答錯了，正確答案是「${blanks.map(p=>p.ans).join('、')}」`;
   };
   quiz.add(q);container.appendChild(d);
 }
@@ -462,7 +492,7 @@ function makePolyQ(container,i,[str,ans,ex],quiz){
   q.grade=()=>{
     inp.readOnly=true;inp.classList.add(q.correct?'iok':'ino');
     d.classList.add(q.correct?'ok':'no');fb.className='fb '+(q.correct?'ok':'no');
-    fb.innerHTML=(q.correct?'✔ 答對了！':`✘ 答錯了，正確的注音是「<span class="zy-inline">${ans}</span>」`)+`　<span style="color:var(--muted)">${ex}</span>`;
+    fb.innerHTML=(q.correct?'✔ 答對了！⭐':`✘ 答錯了，正確的注音是「<span class="zy-inline">${ans}</span>」`)+`　<span style="color:var(--muted)">${ex}</span>`;
   };
   quiz.add(q);container.appendChild(d);
 }
@@ -637,6 +667,47 @@ function build0(){
   updStat();
   qs.forEach(([stem,opts,a,ex],j)=>makeQ(Q,j+1,stem,opts,a,ex,done));
 }
+
+/* ---------- 獎勵 ---------- */
+const UNIT_NAMES={u0:'📖 課文',u2s:'✏️ 形近字',u2p:'🔊 多音字',u3:'③ 成語',u4:'④ 詞語替換'};
+const STORE='l6-stars';
+const starsFor=p=>p>=90?3:p>=70?2:p>=50?1:0;
+const starHTML=(n,cls='')=>[0,1,2].map(i=>`<span class="star ${i<n?'on':''} ${cls}" style="animation-delay:${.25+i*.3}s">★</span>`).join('');
+function loadStars(){try{return JSON.parse(localStorage.getItem(STORE))||{}}catch(e){return {}}}
+let STARS=loadStars();
+function saveStars(id,n){const old=STARS[id]||0,improved=n>old;if(improved){STARS[id]=n;try{localStorage.setItem(STORE,JSON.stringify(STARS))}catch(e){}}updTotal(improved);return {improved};}
+function updTotal(bump){const t=Object.keys(UNIT_NAMES).reduce((a,k)=>a+(STARS[k]||0),0);document.getElementById('starTotal').textContent=t;
+  const b=document.getElementById('rewardBtn');b.classList.toggle('gold',t===15);if(bump){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');}return t;}
+function chime(n){try{const A=window.AudioContext||window.webkitAudioContext;const c=new A();const notes=n===0?[392,330]:[523,659,784,1047].slice(0,n+1);
+  notes.forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=f;o.connect(g);g.connect(c.destination);
+  const t=c.currentTime+i*.18;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.25,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.5);o.start(t);o.stop(t+.55);});}catch(e){}}
+function confetti(){const m=document.getElementById('modal');const cols=['#e8692c','#f2b134','#4f8a3c','#3d7fc4','#c27ac9','#ff8fa3'];
+  for(let i=0;i<70;i++){const d=document.createElement('i');d.className='cf';d.style.left=Math.random()*100+'vw';d.style.background=cols[i%cols.length];
+    d.style.animationDelay=Math.random()*.8+'s';d.style.animationDuration=2+Math.random()*1.5+'s';d.style.transform=`rotate(${Math.random()*360}deg)`;m.appendChild(d);setTimeout(()=>d.remove(),4000);}}
+function openModal(html){const m=document.getElementById('modal');document.getElementById('mbox').innerHTML=html+'<div style="margin-top:14px"><button class="btn main big-btn" onclick="closeModal()">好！</button></div>';m.hidden=false;}
+function closeModal(){document.getElementById('modal').hidden=true;}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+const CHEER=['再加油，下次一定更好！💪','有進步空間，再試一次吧！','很不錯喔！','太棒了！'];
+function celebrate(n,perfect,pct,name){
+  const total=updTotal(false);
+  let h=`<div class="m-unit">${name}</div><div class="m-stars">${starHTML(n,'pop')}</div>`;
+  if(perfect)h+=`<div class="trophy">🏆</div><div class="m-title">全部答對！拿到獎盃！</div>`;
+  else h+=`<div class="m-title">${CHEER[n]}</div><div class="m-sub">得分 ${pct} 分</div>`;
+  if(total===15)h+=`<div class="m-sub" style="color:var(--persimmon);font-weight:700">🎉 15 顆星全部集滿！快去「我的星星」看大獎盃！</div>`;
+  openModal(h);chime(n);if(n>=2)confetti();
+}
+function showShelf(){
+  const t=updTotal(false);
+  let h=`<div class="m-title">🏅 我的獎勵櫃</div><div class="shelf">`;
+  for(const [k,v] of Object.entries(UNIT_NAMES)){const n=STARS[k]||0;
+    h+=`<div class="shelf-row"><span class="sn">${v}</span><span class="ss">${starHTML(n,'sm')}</span><span class="st">${n===3?'🏆':''}</span></div>`;}
+  h+='</div>';
+  h+=t===15?`<div class="trophy big">🏆</div><div class="m-title">柿餅節小達人！<br>15 顆星全部集滿！</div>`
+           :`<div class="m-sub">共 <b>${t}</b> / 15 顆星，每個單元拿到 3 顆星，就能得到「柿餅節小達人」大獎盃！</div>`;
+  h+=`<div style="margin-top:8px"><button class="btn" style="font-size:14px" onclick="if(confirmReset.dataset.s){STARS={};try{localStorage.removeItem(STORE)}catch(e){};showShelf();}else{confirmReset.dataset.s=1;confirmReset.textContent='再按一次確定清除';}" id="confirmReset">清除星星紀錄</button></div>`;
+  openModal(h);if(t===15)confetti();
+}
+updTotal(false);
 
 build0();build2();build3();build4();
 </script>
