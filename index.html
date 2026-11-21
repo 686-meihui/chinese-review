@@ -149,9 +149,55 @@ body.kpon .score{display:none}
 @keyframes shine{50%{transform:scale(1.08) rotate(-4deg);filter:drop-shadow(0 0 14px #ffd75e)}}
 .shelf{text-align:left;margin:10px 0}
 .shelf-row{display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px dashed var(--line)}
-.shelf-row .sn{flex:1;font-size:19px}.shelf-row .st{width:28px;font-size:24px}
+.shelf-row .sn{flex:1;font-size:19px}.shelf-row .st{min-width:60px;white-space:nowrap;font-size:18px;text-align:right}
 .cf{position:fixed;top:-12px;width:10px;height:16px;border-radius:2px;z-index:1;animation:fall linear forwards}
 @keyframes fall{to{top:105vh;transform:rotate(720deg)}}
+.modes .mode.on{background:var(--persimmon);color:#fff;border-color:var(--persimmon)}
+#u1 .cmode{display:none}#u1.challenge .cmode{display:block}#u1.challenge .pmode{display:none}
+#u1:not(.challenge) .submitbar{display:none}
+.blank{font:inherit}
+#u1.challenge .blank{color:transparent}
+.blank.picked{color:var(--ink)!important;background:var(--gold-soft);border-style:solid;border-color:var(--gold)}
+.blank.picked::after,.blank.gok::after,.blank.gno::after{content:none}
+.blank.gok{color:var(--leaf)!important;background:var(--leaf-soft);border:2.5px solid var(--leaf)}
+.blank.gno{color:var(--red)!important;background:var(--red-soft);border:2.5px solid var(--red);text-decoration:line-through}
+.blank.need{border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+.blank.active{outline:4px solid var(--sky)}
+.mfix{display:inline-block;color:var(--leaf);font-weight:700;border:2.5px solid var(--leaf);background:var(--leaf-soft);border-radius:8px;padding:0 8px;margin:2px}
+.mfix::before{content:'正確';font-size:12px;background:var(--leaf);color:#fff;border-radius:4px;padding:0 3px;margin-right:4px;vertical-align:middle}
+.kp-keys button.wide{width:auto;padding:0 12px;font-size:20px}
+.gametab{border-color:#9b7bd1!important;color:#7b55c0!important}
+.gametab.has{background:#9b7bd1!important;color:#fff!important;animation:bump 1.2s infinite}
+.gametab small{font-size:14px}
+.m-sub.small{font-size:16px;color:var(--muted)}
+.mbtns{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ticket{margin:12px 0 0;padding:10px;border-radius:14px;background:#efe6fb;border:2px dashed #9b7bd1;font-size:20px}
+.bigcount{display:flex;gap:8px;justify-content:center;margin:6px 0}
+.bigcount div{flex:1;background:var(--gold-soft);border-radius:14px;padding:6px 4px;display:flex;flex-direction:column;align-items:center}
+.bigcount span{font-size:26px}.bigcount b{font-size:28px;color:var(--persimmon);line-height:1.1}.bigcount small{font-size:14px;color:var(--muted)}
+.trow{font-size:24px;line-height:1.3;margin:6px 0;word-break:break-all}
+.mbox h4{margin:12px 0 2px;text-align:left;color:var(--persimmon);font-size:18px}
+.log{max-height:200px;overflow:auto;text-align:left;font-size:15px;border:1px solid var(--line);border-radius:10px;padding:4px 8px}
+.lrow{display:grid;grid-template-columns:90px 1fr 56px 56px;gap:4px;padding:3px 0;border-bottom:1px dashed var(--line)}
+.lrow span:last-child{color:var(--gold);text-align:right}
+.gtimer{font-size:22px;font-weight:700;color:#7b55c0}
+.gbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:20px}
+.gmsg{min-height:1.6em;font-size:18px;color:var(--muted);margin:6px 0}
+.gmsg.win{color:var(--leaf);font-weight:700;font-size:22px}.gmsg.stuck{color:var(--red)}
+.gboard{background:#fff;border:3px solid #cdbcee;border-radius:20px;max-width:520px;margin:0 auto;touch-action:none}
+#gSvg{width:100%;display:block;touch-action:none;user-select:none}
+.ge{stroke:#d9d2e6;stroke-width:3.2;stroke-linecap:round}
+.ge.on{stroke:#9b7bd1;stroke-width:3.6}
+.gn{fill:#fff;stroke:#7b55c0;stroke-width:1.6;cursor:pointer}
+.gn.cur{fill:var(--persimmon);stroke:#c4521b}
+.gn.hint{fill:var(--gold);animation:blink .8s infinite}
+@keyframes blink{50%{opacity:.35}}
+.glevels{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.lvb{font:inherit;font-size:17px;min-width:46px;height:40px;border-radius:10px;border:2px solid #cdbcee;background:#fff;cursor:pointer}
+.lvb.on{background:#9b7bd1;color:#fff;border-color:#9b7bd1}.lvb.ok{border-color:var(--gold)}
+.lockbox{text-align:center;background:#fff;border:2px dashed #cdbcee;border-radius:20px;padding:24px}
+.progress{height:18px;background:#eee6f8;border-radius:9px;max-width:360px;margin:10px auto;overflow:hidden}
+.progress div{height:100%;background:linear-gradient(90deg,#f2b134,#e8692c);border-radius:9px}
 </style>
 </head>
 <body>
@@ -165,7 +211,8 @@ body.kpon .score{display:none}
   <button data-t="u2">② 形近字・多音字</button>
   <button data-t="u3">③ 成語</button>
   <button data-t="u4">④ 詞語替換</button>
-  <button id="rewardBtn" class="reward-btn" onclick="showShelf()">🏅 我的星星 <b id="starTotal">0</b> / 15</button>
+  <button data-t="ug" class="gametab">🎮 一筆畫</button>
+  <button id="rewardBtn" class="reward-btn" onclick="showShelf()">🏅 我的獎勵 🏆<b id="trophyTotal">0</b></button>
 </nav>
 <main>
 
@@ -188,12 +235,16 @@ body.kpon .score{display:none}
 <section id="u1">
   <div class="bar">
     <h2>課文心智圖</h2>
-    <div>
-      <button class="btn" onclick="mapAll(false)">全部遮住</button>
-      <button class="btn" onclick="mapAll(true)">全部打開</button>
+    <div class="modes">
+      <button class="btn mode on" data-m="p" onclick="setMapMode('p')">📝 自我練習</button>
+      <button class="btn mode" data-m="c" onclick="setMapMode('c')">🚩 闖關挑戰</button>
     </div>
   </div>
-  <p class="bar tip" style="margin-top:-8px">先想想看答案，再點 <b style="color:var(--persimmon)">？</b> 框框檢查。可以按「全部遮住」一直重複練習！　<span class="prog" id="mapProg"></span></p>
+  <div class="pmode">
+    <p class="bar tip" style="margin-top:-8px">先想想看答案，再點 <b style="color:var(--persimmon)">？</b> 框框檢查。　<span class="prog" id="mapProg"></span>
+      <span><button class="btn" onclick="mapAll(false)">全部遮住</button> <button class="btn" onclick="mapAll(true)">全部打開</button></span></p>
+  </div>
+  <div class="cmode"><p class="tip" style="color:var(--muted);font-size:17px;margin-top:-6px">闖關挑戰：點 <b style="color:var(--persimmon)">？</b> 框框，從下面選出正確的詞，全部填完按繳交！</p></div>
 
   <div class="map">
     <div class="root">小鎮的<br>柿餅節</div>
@@ -231,6 +282,7 @@ body.kpon .score{display:none}
       </div>
     </div>
   </div>
+  <div class="cmode"><div class="done"></div><div class="score"></div></div>
 </section>
 
 <!-- ============ 單元二 ============ -->
@@ -286,6 +338,23 @@ body.kpon .score{display:none}
   <div class="score" id="score4"></div>
 </section>
 
+<section id="ug">
+  <div class="bar"><h2>🎮 一筆畫益智遊戲</h2><div id="gTimer" class="gtimer"></div></div>
+  <div id="gLock"></div>
+  <div id="gPlay" hidden>
+    <div class="gbar">
+      <span id="gLevel"></span>
+      <span>
+        <button class="btn" onclick="gUndo()">↶ 退一步</button>
+        <button class="btn" onclick="gReset()">↺ 重來</button>
+        <button class="btn" onclick="gHint()">💡 提示</button>
+      </span>
+    </div>
+    <p class="tip gmsg" id="gMsg">從一個圓點開始，沿著線一點一點走，每條線只能走一次，把所有的線都畫完！</p>
+    <div class="gboard"><svg id="gSvg" viewBox="-6 -6 112 112"></svg></div>
+    <div class="glevels" id="gLevels"></div>
+  </div>
+</section>
 </main>
 <div id="modal" class="modal" hidden><div class="mbox" id="mbox"></div></div>
 <div id="cp" class="kp" hidden>
@@ -302,7 +371,7 @@ body.kpon .score{display:none}
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 document.querySelectorAll('#tabs button[data-t]').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#tabs button[data-t]').forEach(x=>x.classList.toggle('on',x===b));
-  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));if(typeof closeKp==='function')closeKp();if(typeof closeCp==='function')closeCp();
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));if(typeof closeKp==='function')closeKp();if(typeof closeCp==='function')closeCp();if(b.dataset.t==='ug')gRender();updTotal(false);
   window.scrollTo({top:0});
 });
 function makeQ(container,i,stemHTML,options,answer,explain,quiz){
@@ -363,14 +432,14 @@ function scorer(scope,total,rebuild){
     bar.style.display='none';
     s.textContent=`答對 ${ok} / ${total} 題`;
     dn.style.display='block';
-    const pct=Math.round(ok/total*100),st=starsFor(pct),best=saveStars(scope.id,st);
+    const pct=Math.round(ok/total*100),st=starsFor(pct),best=recordAttempt(scope.id,pct,st);
     dn.innerHTML=`<div class="stars-line">${starHTML(st)}</div>`+
-      (ok===total?'🏆 全部答對！你是柿餅節小達人！':`答對 <b>${ok}</b> 題，答錯 <b style="color:var(--red)">${wrong}</b> 題　得分 <b>${pct}</b> 分`)+
-      `<div class="tip" style="font-size:16px;color:var(--muted)">${st<3?'90 分以上就能拿到 3 顆星喔！':''}${best.improved?'　✨ 打破自己的紀錄！':''}</div>`+
+      (ok===total?'💯 全部答對！你是柿餅節小達人！':`答對 <b>${ok}</b> 題，答錯 <b style="color:var(--red)">${wrong}</b> 題　得分 <b>${pct}</b> 分`)+
+      `<div class="tip" style="font-size:16px;color:var(--muted)">${best.pass?`🏆 第 ${best.passCount} 次達標！`:'90 分以上就能達標、拿到獎盃喔！'}${best.improved?'　✨ 打破自己的紀錄！':''}</div>`+
       `<div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">`+
       (wrong?`<button class="btn" data-a="w">👀 只看答錯的題目</button>`:'')+
       `<button class="btn main" data-a="r">🔀 再做一次</button></div>`;
-    celebrate(st,ok===total,pct,UNIT_NAMES[scope.id]||'');
+    celebrate(st,ok===total,pct,scope.id,best);
     const w=dn.querySelector('[data-a=w]');
     if(w)w.onclick=()=>{const on=sec.classList.toggle('onlywrong');w.textContent=on?'📋 顯示全部題目':'👀 只看答錯的題目';};
     dn.querySelector('[data-a=r]').onclick=()=>{rebuild();scope.scrollIntoView({behavior:'smooth'});};
@@ -382,10 +451,33 @@ function scorer(scope,total,rebuild){
 
 /* ---------- 單元一：心智圖 ---------- */
 const blanks=[...document.querySelectorAll('#u1 .blank')];
+blanks.forEach(b=>b.dataset.a=b.textContent);
+let mapMode='p';
 function mapProg(){const o=blanks.filter(b=>b.classList.contains('open')).length;document.getElementById('mapProg').textContent=`已打開 ${o} / ${blanks.length} 格`;}
-blanks.forEach(b=>b.onclick=()=>{b.classList.toggle('open');mapProg();});
 function mapAll(open){blanks.forEach(b=>b.classList.toggle('open',open));mapProg();}
-mapProg();
+function clearBlank(b){b.className='blank';b.textContent=b.dataset.a;b.disabled=false;const f=b.nextElementSibling;if(f&&f.classList.contains('mfix'))f.remove();}
+function setMapMode(m){
+  mapMode=m;closeCp&&closeCp();
+  const u=document.getElementById('u1');u.classList.toggle('challenge',m==='c');u.classList.remove('onlywrong');
+  u.querySelectorAll('.mode').forEach(x=>x.classList.toggle('on',x.dataset.m===m));
+  if(m==='p'){blanks.forEach(b=>{clearBlank(b);b.onclick=()=>{b.classList.toggle('open');mapProg();};});mapProg();}
+  else buildMapChallenge();
+}
+function buildMapChallenge(){
+  const u=document.getElementById('u1');u.classList.remove('onlywrong');
+  const done=scorer(u,blanks.length,buildMapChallenge);
+  const answers=[...new Set(blanks.map(b=>b.dataset.a))];
+  blanks.forEach(b=>{
+    clearBlank(b);b.textContent='';const ans=b.dataset.a;
+    const q={el:b,answered:false,correct:false};
+    const opts=shuffle([ans,...shuffle(answers.filter(x=>x!==ans)).slice(0,3)]);
+    b.onclick=()=>{ if(done.submitted)return;
+      openCp(b,opts,'選出正確的詞',o=>{b.textContent=o;b.classList.add('picked');b.classList.remove('need');q.answered=true;q.correct=(o===ans);done.changed();});};
+    q.grade=()=>{b.classList.add(q.correct?'gok':'gno');
+      if(!q.correct)b.insertAdjacentHTML('afterend',`<span class="mfix">${ans}</span>`);};
+    done.add(q);
+  });
+}
 
 /* ---------- 單元二：形近字・多音字 ---------- */
 const shape=[
@@ -624,14 +716,14 @@ const LESSON={
 const DE_OPTS=['的','得'],PUNCT_OPTS=['，','。','、','；','：','？','！','「','」','——'];
 let cpTarget=null;
 function openCp(btn,opts,title,onPick){
-  cpTarget=btn;document.querySelectorAll('.tb.active').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+  cpTarget=btn;document.querySelectorAll('.tb.active,.blank.active').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
   document.getElementById('cpTitle').textContent=title;
   const k=document.getElementById('cpKeys');k.innerHTML='';
-  opts.forEach(o=>{const b=document.createElement('button');b.textContent=o;b.className=o.length>1?'t':'';b.onclick=()=>{onPick(o);closeCp();};k.appendChild(b);});
+  opts.forEach(o=>{const b=document.createElement('button');b.textContent=o;b.className=o.length>1?'t':'';if(o.length>2)b.classList.add('wide');b.onclick=()=>{onPick(o);closeCp();};k.appendChild(b);});
   document.getElementById('cp').hidden=false;document.body.classList.add('kpon');
   setTimeout(()=>btn.scrollIntoView({behavior:'smooth',block:'center'}),50);
 }
-function closeCp(){document.getElementById('cp').hidden=true;document.body.classList.remove('kpon');document.querySelectorAll('.tb.active').forEach(x=>x.classList.remove('active'));cpTarget=null;}
+function closeCp(){document.getElementById('cp').hidden=true;document.body.classList.remove('kpon');document.querySelectorAll('.tb.active,.blank.active').forEach(x=>x.classList.remove('active'));cpTarget=null;}
 document.querySelector('#cp [data-k=close]').onclick=closeCp;
 function build0(){
   closeCp();
@@ -668,48 +760,183 @@ function build0(){
   qs.forEach(([stem,opts,a,ex],j)=>makeQ(Q,j+1,stem,opts,a,ex,done));
 }
 
-/* ---------- 獎勵 ---------- */
-const UNIT_NAMES={u0:'📖 課文',u2s:'✏️ 形近字',u2p:'🔊 多音字',u3:'③ 成語',u4:'④ 詞語替換'};
-const STORE='l6-stars';
+/* ---------- 獎勵與紀錄 ---------- */
+const UNIT_NAMES={u0:'📖 課文',u1:'① 心智圖',u2s:'✏️ 形近字',u2p:'🔊 多音字',u3:'③ 成語',u4:'④ 詞語替換'};
+const GAME_EVERY=3;        // 每拿到幾座獎盃，送一次遊戲時間
+const GAME_SECONDS=600;    // 一次 10 分鐘
+const K_STARS='l6-stars',K_LOG='l6-log',K_GAME='l6-game';
 const starsFor=p=>p>=90?3:p>=70?2:p>=50?1:0;
 const starHTML=(n,cls='')=>[0,1,2].map(i=>`<span class="star ${i<n?'on':''} ${cls}" style="animation-delay:${.25+i*.3}s">★</span>`).join('');
-function loadStars(){try{return JSON.parse(localStorage.getItem(STORE))||{}}catch(e){return {}}}
-let STARS=loadStars();
-function saveStars(id,n){const old=STARS[id]||0,improved=n>old;if(improved){STARS[id]=n;try{localStorage.setItem(STORE,JSON.stringify(STARS))}catch(e){}}updTotal(improved);return {improved};}
-function updTotal(bump){const t=Object.keys(UNIT_NAMES).reduce((a,k)=>a+(STARS[k]||0),0);document.getElementById('starTotal').textContent=t;
-  const b=document.getElementById('rewardBtn');b.classList.toggle('gold',t===15);if(bump){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');}return t;}
+const ld=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let STARS=ld(K_STARS,{}),LOG=ld(K_LOG,[]),GAME=ld(K_GAME,{left:0,granted:0,level:0,solved:[]});
+const pad=n=>String(n).padStart(2,'0');
+const dstr=t=>{const d=new Date(t);return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}`;};
+const tstr=t=>{const d=new Date(t);return `${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;};
+const trophies=()=>LOG.filter(r=>r.pass).length;
+function practiceDays(){return [...new Set(LOG.map(r=>dstr(r.t)))];}
+function streak(){const days=new Set(practiceDays());let n=0;const d=new Date();if(!days.has(dstr(d)))d.setDate(d.getDate()-1);
+  while(days.has(dstr(d))){n++;d.setDate(d.getDate()-1);}return n;}
+function recordAttempt(id,pct,st){
+  const old=STARS[id]||0,improved=st>old;if(improved){STARS[id]=st;sv(K_STARS,STARS);}
+  const pass=pct>=90,firstToday=!practiceDays().includes(dstr(Date.now()));
+  LOG.push({t:Date.now(),u:id,p:pct,s:st,pass});if(LOG.length>500)LOG=LOG.slice(-500);sv(K_LOG,LOG);
+  const passCount=trophies(),unitPass=LOG.filter(r=>r.pass&&r.u===id).length;
+  let newTicket=false;
+  const shouldGranted=Math.floor(passCount/GAME_EVERY);
+  if(shouldGranted>(GAME.granted||0)){GAME.left=(GAME.left||0)+GAME_SECONDS*(shouldGranted-(GAME.granted||0));GAME.granted=shouldGranted;sv(K_GAME,GAME);newTicket=true;}
+  updTotal(pass);
+  return {improved,pass,passCount,unitPass,newTicket,firstToday};
+}
+function updTotal(bump){
+  document.getElementById('trophyTotal').textContent=trophies();
+  const b=document.getElementById('rewardBtn');if(bump){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');}
+  const g=document.querySelector('.gametab');g.classList.toggle('has',GAME.left>0);
+  g.innerHTML=GAME.left>0?`🎮 一筆畫 <small>${Math.ceil(GAME.left/60)}分</small>`:'🎮 一筆畫 🔒';
+}
 function chime(n){try{const A=window.AudioContext||window.webkitAudioContext;const c=new A();const notes=n===0?[392,330]:[523,659,784,1047].slice(0,n+1);
   notes.forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=f;o.connect(g);g.connect(c.destination);
   const t=c.currentTime+i*.18;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.25,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.5);o.start(t);o.stop(t+.55);});}catch(e){}}
 function confetti(){const m=document.getElementById('modal');const cols=['#e8692c','#f2b134','#4f8a3c','#3d7fc4','#c27ac9','#ff8fa3'];
   for(let i=0;i<70;i++){const d=document.createElement('i');d.className='cf';d.style.left=Math.random()*100+'vw';d.style.background=cols[i%cols.length];
-    d.style.animationDelay=Math.random()*.8+'s';d.style.animationDuration=2+Math.random()*1.5+'s';d.style.transform=`rotate(${Math.random()*360}deg)`;m.appendChild(d);setTimeout(()=>d.remove(),4000);}}
-function openModal(html){const m=document.getElementById('modal');document.getElementById('mbox').innerHTML=html+'<div style="margin-top:14px"><button class="btn main big-btn" onclick="closeModal()">好！</button></div>';m.hidden=false;}
+    d.style.animationDelay=Math.random()*.8+'s';d.style.animationDuration=2+Math.random()*1.5+'s';m.appendChild(d);setTimeout(()=>d.remove(),4000);}}
+function openModal(html,btns){const m=document.getElementById('modal');
+  document.getElementById('mbox').innerHTML=html+`<div class="mbtns">${btns||'<button class="btn main big-btn" onclick="closeModal()">好！</button>'}</div>`;m.hidden=false;}
 function closeModal(){document.getElementById('modal').hidden=true;}
 document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
-const CHEER=['再加油，下次一定更好！💪','有進步空間，再試一次吧！','很不錯喔！','太棒了！'];
-function celebrate(n,perfect,pct,name){
-  const total=updTotal(false);
-  let h=`<div class="m-unit">${name}</div><div class="m-stars">${starHTML(n,'pop')}</div>`;
-  if(perfect)h+=`<div class="trophy">🏆</div><div class="m-title">全部答對！拿到獎盃！</div>`;
-  else h+=`<div class="m-title">${CHEER[n]}</div><div class="m-sub">得分 ${pct} 分</div>`;
-  if(total===15)h+=`<div class="m-sub" style="color:var(--persimmon);font-weight:700">🎉 15 顆星全部集滿！快去「我的星星」看大獎盃！</div>`;
-  openModal(h);chime(n);if(n>=2)confetti();
+const CHEER=['再加油，下次一定更好！💪','有進步了，再試一次就更棒！','很不錯喔！差一點就達標了！','太棒了！'];
+function goGame(){closeModal();document.querySelector('#tabs button[data-t=ug]').click();}
+function celebrate(n,perfect,pct,id,r){
+  let h=`<div class="m-unit">${UNIT_NAMES[id]||''}　${dstr(Date.now())}</div><div class="m-stars">${starHTML(n,'pop')}</div>`;
+  if(r.pass){
+    h+=`<div class="trophy">🏆</div><div class="m-title">${perfect?'全部答對！':'達標成功！'}恭喜你得到一座獎盃！</div>`;
+    h+=`<div class="m-sub">🎉 這是你第 <b>${r.passCount}</b> 次達標！（「${UNIT_NAMES[id]}」第 ${r.unitPass} 次）</div>`;
+    const left=GAME_EVERY-(r.passCount%GAME_EVERY);
+    if(!r.newTicket)h+=`<div class="m-sub small">再拿 <b>${left}</b> 座獎盃，就能玩 10 分鐘一筆畫遊戲！</div>`;
+  }else{
+    h+=`<div class="m-title">${CHEER[n]}</div><div class="m-sub">得分 ${pct} 分，90 分以上就能拿到獎盃！</div>`;
+  }
+  if(r.firstToday){const s=streak();h+=`<div class="m-sub small">📅 今天第一次練習！${s>1?`已經連續練習 <b>${s}</b> 天了，好厲害！`:'每天練習一下，會越來越厲害喔！'}</div>`;}
+  let btns;
+  if(r.newTicket){h+=`<div class="ticket">🎟️ 獎盃集滿 ${GAME_EVERY} 座！送你 <b>10 分鐘</b>一筆畫遊戲時間！</div>`;
+    btns='<button class="btn main big-btn" onclick="goGame()">🎮 現在去玩</button><button class="btn" onclick="closeModal()">等一下再玩</button>';}
+  openModal(h,btns);chime(n);if(n>=2||r.newTicket)confetti();
 }
 function showShelf(){
-  const t=updTotal(false);
-  let h=`<div class="m-title">🏅 我的獎勵櫃</div><div class="shelf">`;
-  for(const [k,v] of Object.entries(UNIT_NAMES)){const n=STARS[k]||0;
-    h+=`<div class="shelf-row"><span class="sn">${v}</span><span class="ss">${starHTML(n,'sm')}</span><span class="st">${n===3?'🏆':''}</span></div>`;}
-  h+='</div>';
-  h+=t===15?`<div class="trophy big">🏆</div><div class="m-title">柿餅節小達人！<br>15 顆星全部集滿！</div>`
-           :`<div class="m-sub">共 <b>${t}</b> / 15 顆星，每個單元拿到 3 顆星，就能得到「柿餅節小達人」大獎盃！</div>`;
-  h+=`<div style="margin-top:8px"><button class="btn" style="font-size:14px" onclick="if(confirmReset.dataset.s){STARS={};try{localStorage.removeItem(STORE)}catch(e){};showShelf();}else{confirmReset.dataset.s=1;confirmReset.textContent='再按一次確定清除';}" id="confirmReset">清除星星紀錄</button></div>`;
-  openModal(h);if(t===15)confetti();
+  const t=trophies(),days=practiceDays();
+  let h=`<div class="m-title">🏅 我的獎勵櫃</div>
+  <div class="bigcount"><div><span>🏆</span><b>${t}</b><small>座獎盃</small></div><div><span>📅</span><b>${days.length}</b><small>天練習</small></div><div><span>🔥</span><b>${streak()}</b><small>天連續</small></div></div>`;
+  h+=`<div class="trow">${'🏆'.repeat(Math.min(t,30))}${t>30?` …共 ${t} 座`:''}${t===0?'<span class="m-sub small">還沒有獎盃，90 分以上就能得到喔！</span>':''}</div>`;
+  const left=GAME_EVERY-(t%GAME_EVERY);
+  h+=`<div class="m-sub small">🎮 ${GAME.left>0?`你有 <b>${Math.ceil(GAME.left/60)}</b> 分鐘遊戲時間可以玩！`:`再拿 <b>${left}</b> 座獎盃，就能玩 10 分鐘一筆畫！`}</div>`;
+  h+=`<h4>各單元最好成績</h4><div class="shelf">`;
+  for(const [k,v] of Object.entries(UNIT_NAMES)){const n=STARS[k]||0,c=LOG.filter(r=>r.pass&&r.u===k).length;
+    h+=`<div class="shelf-row"><span class="sn">${v}</span><span class="ss">${starHTML(n,'sm')}</span><span class="st">${c?`🏆×${c}`:''}</span></div>`;}
+  h+=`</div><h4>練習紀錄</h4><div class="log">`;
+  h+=LOG.length?LOG.slice().reverse().slice(0,30).map(r=>`<div class="lrow"><span>${tstr(r.t)}</span><span>${UNIT_NAMES[r.u]||r.u}</span><span>${r.p} 分</span><span>${r.pass?'🏆':'★'.repeat(r.s)||'—'}</span></div>`).join(''):'<div class="m-sub small">還沒有紀錄，快去闖關吧！</div>';
+  h+=`</div><div style="margin-top:8px"><button class="btn" style="font-size:14px" id="confirmReset">清除全部紀錄</button></div>`;
+  openModal(h);
+  const cr=document.getElementById('confirmReset');
+  cr.onclick=()=>{if(cr.dataset.s){STARS={};LOG=[];GAME={left:0,granted:0,level:0,solved:[]};[K_STARS,K_LOG,K_GAME].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});updTotal(false);gRender&&gRender();showShelf();}
+    else{cr.dataset.s=1;cr.textContent='再按一次，確定清除（獎盃、紀錄都會不見）';}};
+}
+function welcomeBack(){
+  if(!LOG.length)return;
+  const last=LOG[LOG.length-1].t,today=dstr(Date.now());
+  if(dstr(last)===today)return;
+  const gap=Math.round((new Date(today)-new Date(dstr(last)))/86400000);
+  openModal(`<div class="m-title">👋 歡迎回來！</div><div class="m-sub">你上次練習是 <b>${dstr(last)}</b>${gap>=3?`，已經 ${gap} 天沒來囉！`:'。'}</div>
+   <div class="m-sub">到現在你已經練習了 <b>${practiceDays().length}</b> 天，拿到 <b>${trophies()}</b> 座獎盃！</div>
+   <div class="m-sub small">今天也來闖一關吧！💪</div>`,'<button class="btn main big-btn" onclick="closeModal()">出發！</button>');
 }
 updTotal(false);
 
-build0();build2();build3();build4();
+/* ---------- 一筆畫遊戲 ---------- */
+const LEVELS=[
+ {name:'三角形',n:[[50,12],[12,88],[88,88]],e:[[0,1],[1,2],[2,0]]},
+ {name:'小蝴蝶',n:[[50,50],[12,15],[12,85],[88,15],[88,85]],e:[[0,1],[1,2],[2,0],[0,3],[3,4],[4,0]]},
+ {name:'方塊斜線',n:[[15,15],[85,15],[85,85],[15,85]],e:[[0,1],[1,2],[2,3],[3,0],[0,2]]},
+ {name:'兩個房間',n:[[10,22],[50,22],[90,22],[10,78],[50,78],[90,78]],e:[[0,1],[1,2],[3,4],[4,5],[0,3],[1,4],[2,5]]},
+ {name:'小星星',n:[[50,8],[90,38],[75,90],[25,90],[10,38]],e:[[0,2],[2,4],[4,1],[1,3],[3,0]]},
+ {name:'小房子',n:[[15,42],[85,42],[85,92],[15,92],[50,6],[50,67]],e:[[0,1],[1,2],[2,3],[3,0],[0,4],[4,1],[0,5],[5,2],[1,5],[5,3]]},
+ {name:'信封',n:[[10,22],[90,22],[90,78],[10,78],[50,50],[50,96]],e:[[0,1],[1,2],[2,3],[3,0],[0,4],[4,2],[1,4],[4,3],[3,5],[5,2]]},
+ {name:'雙窗戶',n:[[10,22],[50,22],[90,22],[10,78],[50,78],[90,78]],e:[[0,1],[1,2],[3,4],[4,5],[0,3],[1,4],[2,5],[0,4],[1,5]]},
+ {name:'九宮格',n:[[15,15],[50,15],[85,15],[15,50],[50,50],[85,50],[15,85],[50,85],[85,85]],e:[[0,1],[1,2],[3,4],[4,5],[6,7],[7,8],[0,3],[3,6],[1,4],[4,7],[2,5],[5,8],[1,3],[5,7]]},
+ {name:'六角星',n:[[50,6],[88,28],[88,72],[50,94],[12,72],[12,28]],e:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[0,2],[2,4],[4,0],[1,3],[3,5],[5,1]]},
+];
+let G={lv:0,path:[],used:[],hint:false},gTick=null,gDrag=false;
+const svgNS='http://www.w3.org/2000/svg';
+function gStartLevel(i){G={lv:i,path:[],used:[],hint:false};GAME.level=i;sv(K_GAME,GAME);gDraw();gMsg('從一個圓點開始，沿著線走，每條線只能走一次，把所有的線都畫完！');}
+function gMsg(t,cls=''){const m=document.getElementById('gMsg');m.textContent=t;m.className='tip gmsg '+cls;}
+function gOdd(L){const d=L.n.map(()=>0);L.e.forEach(([a,b])=>{d[a]++;d[b]++});const o=d.map((x,i)=>x%2?i:-1).filter(i=>i>=0);return o.length?o:L.n.map((_,i)=>i);}
+function gDraw(){
+  const L=LEVELS[G.lv],S=document.getElementById('gSvg');S.innerHTML='';
+  document.getElementById('gLevel').innerHTML=`第 <b>${G.lv+1}</b> 關：${L.name}　<small>（${G.used.length} / ${L.e.length} 條線）</small>`;
+  L.e.forEach(([a,b],k)=>{const l=document.createElementNS(svgNS,'line');const[x1,y1]=L.n[a],[x2,y2]=L.n[b];
+    Object.entries({x1,y1,x2,y2}).forEach(([q,v])=>l.setAttribute(q,v));l.setAttribute('class','ge'+(G.used.includes(k)?' on':''));S.appendChild(l);});
+  const odd=gOdd(L),cur=G.path[G.path.length-1];
+  L.n.forEach(([x,y],i)=>{const c=document.createElementNS(svgNS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',5.2);
+    c.setAttribute('class','gn'+(i===cur?' cur':'')+(G.hint&&!G.path.length&&odd.includes(i)?' hint':''));c.dataset.i=i;S.appendChild(c);});
+  const lv=document.getElementById('gLevels');
+  lv.innerHTML=LEVELS.map((l,i)=>`<button class="lvb ${i===G.lv?'on':''} ${(GAME.solved||[]).includes(i)?'ok':''}" onclick="gStartLevel(${i})">${(GAME.solved||[]).includes(i)?'⭐':''}${i+1}</button>`).join('');
+}
+function gTry(i){
+  const L=LEVELS[G.lv];
+  if(!G.path.length){G.path.push(i);gDraw();return;}
+  const cur=G.path[G.path.length-1];if(i===cur)return;
+  const k=L.e.findIndex(([a,b],k)=>!G.used.includes(k)&&((a===cur&&b===i)||(b===cur&&a===i)));
+  if(k<0){return;}
+  G.used.push(k);G.path.push(i);gDraw();
+  if(G.used.length===L.e.length){
+    GAME.solved=[...new Set([...(GAME.solved||[]),G.lv])];sv(K_GAME,GAME);gDraw();chime(3);
+    const next=G.lv+1<LEVELS.length?G.lv+1:null;
+    gMsg(next!==null?'🎉 過關了！太厲害了！準備下一關…':'🏆 全部關卡都過了！你是一筆畫大師！','win');
+    if(next!==null)setTimeout(()=>{if(G.used.length===LEVELS[G.lv].e.length&&G.lv===next-1)gStartLevel(next);},1600);
+    return;
+  }
+  const left=L.e.some(([a,b],k)=>!G.used.includes(k)&&(a===i||b===i));
+  if(!left)gMsg('卡住了！這個點沒有路可以走了，按「↶ 退一步」或「↺ 重來」再試試看。','stuck');
+  else gMsg('很好，繼續畫！');
+}
+function gUndo(){if(!G.path.length)return;if(G.used.length){G.used.pop();G.path.pop();}else G.path.pop();gDraw();gMsg('退一步了，再想想看！');}
+function gReset(){G.path=[];G.used=[];gDraw();gMsg('重新開始！');}
+function gHint(){G.path=[];G.used=[];G.hint=true;gDraw();gMsg('💡 小祕訣：從閃閃發亮的點開始畫，比較容易成功喔！');}
+(function(){const S=document.getElementById('gSvg');
+  const pick=e=>{const pt=S.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(S.getScreenCTM().inverse());
+    const L=LEVELS[G.lv];let best=-1,bd=9;L.n.forEach(([x,y],i)=>{const d=Math.hypot(x-p.x,y-p.y);if(d<bd){bd=d;best=i;}});return best;};
+  S.addEventListener('pointerdown',e=>{if(!gRunning())return;gDrag=true;S.setPointerCapture(e.pointerId);const i=pick(e);if(i>=0)gTry(i);});
+  S.addEventListener('pointermove',e=>{if(!gDrag||!gRunning())return;const i=pick(e);if(i>=0)gTry(i);});
+  S.addEventListener('pointerup',()=>gDrag=false);S.addEventListener('pointercancel',()=>gDrag=false);
+})();
+const gRunning=()=>GAME.left>0&&document.getElementById('ug').classList.contains('on');
+function fmt(sec){return `${Math.floor(sec/60)}:${pad(sec%60)}`;}
+function gRender(){
+  const lock=document.getElementById('gLock'),play=document.getElementById('gPlay'),tm=document.getElementById('gTimer');
+  if(GAME.left>0){lock.innerHTML='';play.hidden=false;tm.textContent='⏰ 剩下 '+fmt(GAME.left);gDraw();}
+  else{
+    play.hidden=true;tm.textContent='';
+    const t=trophies(),left=GAME_EVERY-(t%GAME_EVERY);
+    lock.innerHTML=`<div class="lockbox"><div style="font-size:70px">🔒</div>
+     <div class="m-title">${(GAME.granted||0)>0?'遊戲時間用完囉！':'一筆畫遊戲還沒解鎖'}</div>
+     <div class="m-sub">每拿到 <b>${GAME_EVERY}</b> 座獎盃（測驗 90 分以上），就能玩 <b>10 分鐘</b>！</div>
+     <div class="progress"><div style="width:${(t%GAME_EVERY)/GAME_EVERY*100}%"></div></div>
+     <div class="m-sub">現在有 🏆 ${t} 座，再拿 <b>${left}</b> 座就能玩！</div>
+     <div class="m-sub small">快去「課文」或其他單元闖關吧！💪</div></div>`;
+  }
+}
+function gStartTimer(){clearInterval(gTick);gTick=setInterval(()=>{
+  if(!gRunning()||document.hidden)return;
+  GAME.left=Math.max(0,GAME.left-1);if(GAME.left%5===0)sv(K_GAME,GAME);
+  document.getElementById('gTimer').textContent='⏰ 剩下 '+fmt(GAME.left);
+  if(GAME.left===60)gMsg('⏰ 還剩 1 分鐘喔！');
+  if(GAME.left===0){sv(K_GAME,GAME);updTotal(false);gRender();
+    openModal('<div style="font-size:70px">⏰</div><div class="m-title">時間到囉！</div><div class="m-sub">玩得很開心吧！回去練習，拿到更多獎盃就能再玩！</div>','<button class="btn main big-btn" onclick="closeModal();document.querySelector(\'#tabs button[data-t=u0]\').click()">回去練習 📖</button>');}
+},1000);}
+G.lv=Math.min(GAME.level||0,LEVELS.length-1);
+gStartTimer();
+
+setMapMode('p');build0();build2();build3();build4();
+welcomeBack();
 </script>
 </body>
 </html>
