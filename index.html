@@ -186,7 +186,7 @@ body.kpon .score{display:none}
 .gmsg.win{color:var(--leaf);font-weight:700;font-size:22px}.gmsg.stuck{color:var(--red)}
 .gboard{background:#fff;border:3px solid #cdbcee;border-radius:20px;max-width:520px;margin:0 auto;touch-action:none}
 #gSvg{width:100%;display:block;touch-action:none;user-select:none}
-.ge{stroke:#d9d2e6;stroke-width:3.2;stroke-linecap:round}
+.ge{stroke:#d9d2e6;stroke-width:2.8;stroke-linecap:round}
 .ge.on{stroke:#9b7bd1;stroke-width:3.6}
 .gn{fill:#fff;stroke:#7b55c0;stroke-width:1.6;cursor:pointer}
 .gn.cur{fill:var(--persimmon);stroke:#c4521b}
@@ -198,6 +198,18 @@ body.kpon .score{display:none}
 .lockbox{text-align:center;background:#fff;border:2px dashed #cdbcee;border-radius:20px;padding:24px}
 .progress{height:18px;background:#eee6f8;border-radius:9px;max-width:360px;margin:10px auto;overflow:hidden}
 .progress div{height:100%;background:linear-gradient(90deg,#f2b134,#e8692c);border-radius:9px}
+.gsub{border-bottom-color:#9b7bd1}.gsub button{border-color:#9b7bd1;color:#7b55c0}.gsub button.on{background:#9b7bd1;color:#fff}
+.cwrap{display:flex;gap:14px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
+.cprev{background:#fff;border:3px solid #cdbcee;border-radius:16px;padding:6px;width:210px;text-align:center}
+.cplab{font-size:15px;color:var(--muted)}
+#cPrev{width:100%;display:block}
+.cboard{flex:1;min-width:280px;margin:0}
+#cSvg{width:100%;display:block;touch-action:none;user-select:none}
+.cdot{fill:#b9aed0}.cdot.pen{fill:var(--persimmon);stroke:#c4521b;stroke-width:1}
+.ctgt{stroke:#2c3e66;stroke-width:3;stroke-linecap:round}
+.cline{stroke:#58b83a;stroke-width:3.2;stroke-linecap:round}
+.cline.bad{stroke:var(--red)}
+.chint{stroke:var(--gold);stroke-width:3;stroke-dasharray:3 2;animation:blink .8s infinite}
 </style>
 </head>
 <body>
@@ -211,7 +223,7 @@ body.kpon .score{display:none}
   <button data-t="u2">② 形近字・多音字</button>
   <button data-t="u3">③ 成語</button>
   <button data-t="u4">④ 詞語替換</button>
-  <button data-t="ug" class="gametab">🎮 一筆畫</button>
+  <button data-t="ug" class="gametab">🎮 益智遊戲</button>
   <button id="rewardBtn" class="reward-btn" onclick="showShelf()">🏅 我的獎勵 🏆<b id="trophyTotal">0</b></button>
 </nav>
 <main>
@@ -339,20 +351,43 @@ body.kpon .score{display:none}
 </section>
 
 <section id="ug">
-  <div class="bar"><h2>🎮 一筆畫益智遊戲</h2><div id="gTimer" class="gtimer"></div></div>
+  <div class="bar"><h2>🎮 益智遊戲</h2><div id="gTimer" class="gtimer"></div></div>
   <div id="gLock"></div>
   <div id="gPlay" hidden>
-    <div class="gbar">
-      <span id="gLevel"></span>
-      <span>
-        <button class="btn" onclick="gUndo()">↶ 退一步</button>
-        <button class="btn" onclick="gReset()">↺ 重來</button>
-        <button class="btn" onclick="gHint()">💡 提示</button>
-      </span>
+    <div class="subtabs gsub">
+      <button data-g="one" class="on" onclick="gSwitch('one')">✏️ 一筆畫</button>
+      <button data-g="copy" onclick="gSwitch('copy')">📐 照樣畫線</button>
     </div>
-    <p class="tip gmsg" id="gMsg">從一個圓點開始，沿著線一點一點走，每條線只能走一次，把所有的線都畫完！</p>
-    <div class="gboard"><svg id="gSvg" viewBox="-6 -6 112 112"></svg></div>
-    <div class="glevels" id="gLevels"></div>
+    <div id="gpOne">
+      <div class="gbar">
+        <span id="gLevel"></span>
+        <span>
+          <button class="btn" onclick="gUndo()">↶ 退一步</button>
+          <button class="btn" onclick="gReset()">↺ 重來</button>
+          <button class="btn" onclick="gHint()">💡 提示</button>
+        </span>
+      </div>
+      <p class="tip gmsg" id="gMsg">從一個圓點開始，沿著線一點一點走，每條線只能走一次，把所有的線都畫完！</p>
+      <div class="gboard"><svg id="gSvg" viewBox="-6 -6 112 112"></svg></div>
+      <div class="glevels" id="gLevels"></div>
+    </div>
+    <div id="gpCopy" hidden>
+      <div class="gbar">
+        <span id="cLevel"></span>
+        <span>
+          <button class="btn" onclick="cUndo()">↶ 退一步</button>
+          <button class="btn" onclick="cReset()">↺ 重來</button>
+          <button class="btn" onclick="cHint()">💡 提示</button>
+        </span>
+      </div>
+      <p class="tip gmsg" id="cMsg">看上面的小圖，在下面的釘板上畫出一模一樣的圖形！</p>
+      <div class="cwrap">
+        <div class="cprev"><div class="cplab">照這個畫 👇</div><svg id="cPrev" viewBox="0 0 100 100"></svg></div>
+        <div class="gboard cboard"><svg id="cSvg" viewBox="0 0 100 100"></svg></div>
+      </div>
+      <p class="tip" style="color:var(--muted);font-size:15px;text-align:center">點一個點開始，再點另一個點就會連成線。點目前的點（橘色）一次可以「提筆」，換到別的地方畫。也可以用手指直接拖著畫。</p>
+      <div class="glevels" id="cLevels"></div>
+    </div>
   </div>
 </section>
 </main>
@@ -627,9 +662,9 @@ function buildPoly(){
   shuffle(poly).forEach(p=>makePolyQ(B,i++,p,done));
 }
 function build2(){buildShape();buildPoly();}
-document.querySelectorAll('.subtabs button').forEach(b=>b.onclick=()=>{
+document.querySelectorAll('#u2 .subtabs button').forEach(b=>b.onclick=()=>{
   closeKp();
-  document.querySelectorAll('.subtabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('#u2 .subtabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('#u2 .blk').forEach(x=>x.classList.toggle('on',x.id===b.dataset.b));
 });
 
@@ -792,7 +827,7 @@ function updTotal(bump){
   document.getElementById('trophyTotal').textContent=trophies();
   const b=document.getElementById('rewardBtn');if(bump){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');}
   const g=document.querySelector('.gametab');g.classList.toggle('has',GAME.left>0);
-  g.innerHTML=GAME.left>0?`🎮 一筆畫 <small>${Math.ceil(GAME.left/60)}分</small>`:'🎮 一筆畫 🔒';
+  g.innerHTML=GAME.left>0?`🎮 益智遊戲 <small>${Math.ceil(GAME.left/60)}分</small>`:'🎮 益智遊戲 🔒';
 }
 function chime(n){try{const A=window.AudioContext||window.webkitAudioContext;const c=new A();const notes=n===0?[392,330]:[523,659,784,1047].slice(0,n+1);
   notes.forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=f;o.connect(g);g.connect(c.destination);
@@ -812,13 +847,13 @@ function celebrate(n,perfect,pct,id,r){
     h+=`<div class="trophy">🏆</div><div class="m-title">${perfect?'全部答對！':'達標成功！'}恭喜你得到一座獎盃！</div>`;
     h+=`<div class="m-sub">🎉 這是你第 <b>${r.passCount}</b> 次達標！（「${UNIT_NAMES[id]}」第 ${r.unitPass} 次）</div>`;
     const left=GAME_EVERY-(r.passCount%GAME_EVERY);
-    if(!r.newTicket)h+=`<div class="m-sub small">再拿 <b>${left}</b> 座獎盃，就能玩 10 分鐘一筆畫遊戲！</div>`;
+    if(!r.newTicket)h+=`<div class="m-sub small">再拿 <b>${left}</b> 座獎盃，就能玩 10 分鐘益智遊戲！</div>`;
   }else{
     h+=`<div class="m-title">${CHEER[n]}</div><div class="m-sub">得分 ${pct} 分，90 分以上就能拿到獎盃！</div>`;
   }
   if(r.firstToday){const s=streak();h+=`<div class="m-sub small">📅 今天第一次練習！${s>1?`已經連續練習 <b>${s}</b> 天了，好厲害！`:'每天練習一下，會越來越厲害喔！'}</div>`;}
   let btns;
-  if(r.newTicket){h+=`<div class="ticket">🎟️ 獎盃集滿 ${GAME_EVERY} 座！送你 <b>10 分鐘</b>一筆畫遊戲時間！</div>`;
+  if(r.newTicket){h+=`<div class="ticket">🎟️ 獎盃集滿 ${GAME_EVERY} 座！送你 <b>10 分鐘</b>益智遊戲時間！（一筆畫、照樣畫線）</div>`;
     btns='<button class="btn main big-btn" onclick="goGame()">🎮 現在去玩</button><button class="btn" onclick="closeModal()">等一下再玩</button>';}
   openModal(h,btns);chime(n);if(n>=2||r.newTicket)confetti();
 }
@@ -828,7 +863,7 @@ function showShelf(){
   <div class="bigcount"><div><span>🏆</span><b>${t}</b><small>座獎盃</small></div><div><span>📅</span><b>${days.length}</b><small>天練習</small></div><div><span>🔥</span><b>${streak()}</b><small>天連續</small></div></div>`;
   h+=`<div class="trow">${'🏆'.repeat(Math.min(t,30))}${t>30?` …共 ${t} 座`:''}${t===0?'<span class="m-sub small">還沒有獎盃，90 分以上就能得到喔！</span>':''}</div>`;
   const left=GAME_EVERY-(t%GAME_EVERY);
-  h+=`<div class="m-sub small">🎮 ${GAME.left>0?`你有 <b>${Math.ceil(GAME.left/60)}</b> 分鐘遊戲時間可以玩！`:`再拿 <b>${left}</b> 座獎盃，就能玩 10 分鐘一筆畫！`}</div>`;
+  h+=`<div class="m-sub small">🎮 ${GAME.left>0?`你有 <b>${Math.ceil(GAME.left/60)}</b> 分鐘遊戲時間可以玩！`:`再拿 <b>${left}</b> 座獎盃，就能玩 10 分鐘益智遊戲！`}</div>`;
   h+=`<h4>各單元最好成績</h4><div class="shelf">`;
   for(const [k,v] of Object.entries(UNIT_NAMES)){const n=STARS[k]||0,c=LOG.filter(r=>r.pass&&r.u===k).length;
     h+=`<div class="shelf-row"><span class="sn">${v}</span><span class="ss">${starHTML(n,'sm')}</span><span class="st">${c?`🏆×${c}`:''}</span></div>`;}
@@ -837,7 +872,7 @@ function showShelf(){
   h+=`</div><div style="margin-top:8px"><button class="btn" style="font-size:14px" id="confirmReset">清除全部紀錄</button></div>`;
   openModal(h);
   const cr=document.getElementById('confirmReset');
-  cr.onclick=()=>{if(cr.dataset.s){STARS={};LOG=[];GAME={left:0,granted:0,level:0,solved:[]};[K_STARS,K_LOG,K_GAME].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});updTotal(false);gRender&&gRender();showShelf();}
+  cr.onclick=()=>{if(cr.dataset.s){STARS={};LOG=[];GAME={left:0,granted:0,level:0,solved:[],clevel:0,csolved:[]};[K_STARS,K_LOG,K_GAME].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});updTotal(false);gRender&&gRender();showShelf();}
     else{cr.dataset.s=1;cr.textContent='再按一次，確定清除（獎盃、紀錄都會不見）';}};
 }
 function welcomeBack(){
@@ -875,7 +910,8 @@ function gDraw(){
   L.e.forEach(([a,b],k)=>{const l=document.createElementNS(svgNS,'line');const[x1,y1]=L.n[a],[x2,y2]=L.n[b];
     Object.entries({x1,y1,x2,y2}).forEach(([q,v])=>l.setAttribute(q,v));l.setAttribute('class','ge'+(G.used.includes(k)?' on':''));S.appendChild(l);});
   const odd=gOdd(L),cur=G.path[G.path.length-1];
-  L.n.forEach(([x,y],i)=>{const c=document.createElementNS(svgNS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',5.2);
+  let md=99;L.n.forEach((a,i)=>L.n.forEach((b,j)=>{if(i<j)md=Math.min(md,Math.hypot(a[0]-b[0],a[1]-b[1]));}));const rr=Math.min(5.2,md*0.26);
+  L.n.forEach(([x,y],i)=>{const c=document.createElementNS(svgNS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',rr);
     c.setAttribute('class','gn'+(i===cur?' cur':'')+(G.hint&&!G.path.length&&odd.includes(i)?' hint':''));c.dataset.i=i;S.appendChild(c);});
   const lv=document.getElementById('gLevels');
   lv.innerHTML=LEVELS.map((l,i)=>`<button class="lvb ${i===G.lv?'on':''} ${(GAME.solved||[]).includes(i)?'ok':''}" onclick="gStartLevel(${i})">${(GAME.solved||[]).includes(i)?'⭐':''}${i+1}</button>`).join('');
@@ -912,12 +948,12 @@ const gRunning=()=>GAME.left>0&&document.getElementById('ug').classList.contains
 function fmt(sec){return `${Math.floor(sec/60)}:${pad(sec%60)}`;}
 function gRender(){
   const lock=document.getElementById('gLock'),play=document.getElementById('gPlay'),tm=document.getElementById('gTimer');
-  if(GAME.left>0){lock.innerHTML='';play.hidden=false;tm.textContent='⏰ 剩下 '+fmt(GAME.left);gDraw();}
+  if(GAME.left>0){lock.innerHTML='';play.hidden=false;tm.textContent='⏰ 剩下 '+fmt(GAME.left);gSwitch(gMode);}
   else{
     play.hidden=true;tm.textContent='';
     const t=trophies(),left=GAME_EVERY-(t%GAME_EVERY);
     lock.innerHTML=`<div class="lockbox"><div style="font-size:70px">🔒</div>
-     <div class="m-title">${(GAME.granted||0)>0?'遊戲時間用完囉！':'一筆畫遊戲還沒解鎖'}</div>
+     <div class="m-title">${(GAME.granted||0)>0?'遊戲時間用完囉！':'益智遊戲還沒解鎖'}</div>
      <div class="m-sub">每拿到 <b>${GAME_EVERY}</b> 座獎盃（測驗 90 分以上），就能玩 <b>10 分鐘</b>！</div>
      <div class="progress"><div style="width:${(t%GAME_EVERY)/GAME_EVERY*100}%"></div></div>
      <div class="m-sub">現在有 🏆 ${t} 座，再拿 <b>${left}</b> 座就能玩！</div>
@@ -928,10 +964,128 @@ function gStartTimer(){clearInterval(gTick);gTick=setInterval(()=>{
   if(!gRunning()||document.hidden)return;
   GAME.left=Math.max(0,GAME.left-1);if(GAME.left%5===0)sv(K_GAME,GAME);
   document.getElementById('gTimer').textContent='⏰ 剩下 '+fmt(GAME.left);
-  if(GAME.left===60)gMsg('⏰ 還剩 1 分鐘喔！');
+  if(GAME.left===60){gMsg('⏰ 還剩 1 分鐘喔！');cMsg('⏰ 還剩 1 分鐘喔！');}
   if(GAME.left===0){sv(K_GAME,GAME);updTotal(false);gRender();
     openModal('<div style="font-size:70px">⏰</div><div class="m-title">時間到囉！</div><div class="m-sub">玩得很開心吧！回去練習，拿到更多獎盃就能再玩！</div>','<button class="btn main big-btn" onclick="closeModal();document.querySelector(\'#tabs button[data-t=u0]\').click()">回去練習 📖</button>');}
 },1000);}
+
+/* 進階一筆畫：用固定亂數產生的路徑，保證一定畫得完 */
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function genTrail(seed,W,H,len){
+  const R=rng(seed);
+  for(let attempt=0;attempt<400;attempt++){
+    const used=new Set(),path=[[Math.floor(R()*W),Math.floor(R()*H)]];
+    const key=(a,b)=>{const x=a[0]+','+a[1],y=b[0]+','+b[1];return x<y?x+'|'+y:y+'|'+x;};
+    while(path.length<=len){
+      const [x,y]=path[path.length-1];
+      const mv=[];
+      for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){
+        const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=W||ny>=H)continue;
+        const k=key([x,y],[nx,ny]);if(used.has(k))continue;
+        if(dx&&dy&&used.has(key([x+dx,y],[x,y+dy])))continue; // 避免兩條斜線交叉
+        mv.push([nx,ny,k]);
+      }
+      if(!mv.length)break;
+      const [nx,ny,k]=mv[Math.floor(R()*mv.length)];used.add(k);path.push([nx,ny]);
+    }
+    if(path.length<=len)continue;
+    const ids={},n=[],e=[];
+    const sp=W>1?84/(Math.max(W,H)-1):0,ox=50-sp*(W-1)/2,oy=50-sp*(H-1)/2;
+    const id=p=>{const k=p.join(',');if(!(k in ids)){ids[k]=n.length;n.push([ox+p[0]*sp,oy+p[1]*sp]);}return ids[k];};
+    for(let i=0;i<path.length-1;i++)e.push([id(path[i]),id(path[i+1])]);
+    return {n,e};
+  }
+}
+[[4,4,10],[4,4,12],[4,4,14],[4,4,16],[5,5,16],[5,5,18],[5,5,20],[5,5,22],[5,5,24],[5,5,26],
+ [5,5,28],[6,6,24],[6,6,28],[6,6,30],[6,6,32],[6,6,34],[6,6,36],[6,6,38],[6,6,40],[6,6,44]].forEach(([w,h,l],i)=>{
+  const t=genTrail(1000+i*37,w,h,l);LEVELS.push({name:(i<10?'進階 ':'挑戰 ')+(i+1),n:t.n,e:t.e});});
+
+/* ---------- 照樣畫線 ---------- */
+const CLEVELS=[
+ {g:5,s:[[[2,1],[1,3],[3,3],[2,1]]]},
+ {g:5,s:[[[1,1],[3,1],[3,3],[1,3],[1,1]]]},
+ {g:5,s:[[[1,1],[3,1],[3,3],[2,4],[1,3],[1,1]]]},
+ {g:5,s:[[[0,2],[4,2]],[[2,0],[4,2],[2,4]]]},
+ {g:5,s:[[[1,4],[1,2],[2,1],[3,2],[3,4],[1,4]],[[1,2],[3,2]]]},
+ {g:5,s:[[[0,0],[4,0],[0,4],[4,4],[0,0]]]},
+ {g:5,s:[[[1,4],[1,0],[4,1],[1,2]]]},
+ {g:5,s:[[[0,1],[2,3],[4,2],[2,1],[0,3],[0,1]]]},
+ {g:5,s:[[[2,0],[4,2],[2,4],[0,2],[2,0]],[[2,0],[2,4]],[[0,2],[4,2]]]},
+ {g:5,s:[[[0,1],[4,1],[4,4],[0,4],[0,1],[2,3],[4,1]]]},
+];
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+function units(a,b){const dx=b[0]-a[0],dy=b[1]-a[1],g=gcd(Math.abs(dx),Math.abs(dy))||1,sx=dx/g,sy=dy/g,out=[];
+  for(let i=0;i<g;i++){const p=[a[0]+sx*i,a[1]+sy*i],q=[p[0]+sx,p[1]+sy];const x=p.join(','),y=q.join(',');out.push(x<y?x+'|'+y:y+'|'+x);}return out;}
+function targetUnits(L){const set=new Set();L.s.forEach(st=>{for(let i=0;i<st.length-1;i++)units(st[i],st[i+1]).forEach(u=>set.add(u));});return set;}
+(function(){ // 產生更難的關卡：線越來越多
+  const R=rng(777);
+  for(let i=0;i<20;i++){
+    const g=i<8?5:6,k=4+Math.floor(i/2.5),minU=6+Math.round(i*0.7);
+    let lv,tries=0;
+    do{
+      const strokes=[];let left=k;
+      while(left>0){const len=Math.min(left,2+Math.floor(R()*4));left-=len;
+        let p=[Math.floor(R()*g),Math.floor(R()*g)];const st=[p];
+        for(let j=0;j<len;j++){let q;do{q=[Math.floor(R()*g),Math.floor(R()*g)];}while((q[0]===p[0]&&q[1]===p[1])||Math.abs(q[0]-p[0])+Math.abs(q[1]-p[1])>4);st.push(q);p=q;}
+        strokes.push(st);}
+      lv={g,s:strokes};
+    }while(targetUnits(lv).size<minU&&++tries<200);
+    CLEVELS.push(lv);
+  }
+})();
+let C={lv:0,segs:[],pen:null,hint:null},cDrag=false,cLift=false;
+const cxy=(L,p)=>{const sp=80/(L.g-1);return [10+p[0]*sp,10+p[1]*sp];};
+function cDrawnUnits(){const set=new Set();C.segs.forEach(([a,b])=>units(a,b).forEach(u=>set.add(u)));return set;}
+function cDraw(){
+  const L=CLEVELS[C.lv],T=targetUnits(L),D=cDrawnUnits();
+  document.getElementById('cLevel').innerHTML=`第 <b>${C.lv+1}</b> 關　<small>${L.g}×${L.g} 釘板</small>`;
+  const dots=(S,r)=>{for(let y=0;y<L.g;y++)for(let x=0;x<L.g;x++){const [px,py]=cxy(L,[x,y]);const c=document.createElementNS(svgNS,'circle');c.setAttribute('cx',px);c.setAttribute('cy',py);c.setAttribute('r',r);c.setAttribute('class','cdot'+(C.pen&&S.id==='cSvg'&&C.pen[0]===x&&C.pen[1]===y?' pen':''));S.appendChild(c);}};
+  const line=(S,a,b,cls)=>{const l=document.createElementNS(svgNS,'line');const[x1,y1]=cxy(L,a),[x2,y2]=cxy(L,b);Object.entries({x1,y1,x2,y2}).forEach(([q,v])=>l.setAttribute(q,v));l.setAttribute('class',cls);S.appendChild(l);};
+  const P=document.getElementById('cPrev');P.innerHTML='';dots(P,2.6);
+  L.s.forEach(st=>{for(let i=0;i<st.length-1;i++)line(P,st[i],st[i+1],'ctgt');});
+  const S=document.getElementById('cSvg');S.innerHTML='';
+  const full=[...T].every(u=>D.has(u)),extra=[...D].some(u=>!T.has(u));
+  if(C.hint){const [a,b]=C.hint.split('|').map(z=>z.split(',').map(Number));line(S,a,b,'chint');}
+  D.forEach(u=>{const [a,b]=u.split('|').map(z=>z.split(',').map(Number));line(S,a,b,'cline'+(full&&extra&&!T.has(u)?' bad':''));});
+  dots(S,2.5);
+  document.getElementById('cLevels').innerHTML=CLEVELS.map((l,i)=>`<button class="lvb ${i===C.lv?'on':''} ${(GAME.csolved||[]).includes(i)?'ok':''}" onclick="cStart(${i})">${(GAME.csolved||[]).includes(i)?'⭐':''}${i+1}</button>`).join('');
+}
+function cMsg(t,cls=''){const m=document.getElementById('cMsg');m.textContent=t;m.className='tip gmsg '+cls;}
+function cStart(i){C={lv:i,segs:[],pen:null,hint:null};GAME.clevel=i;sv(K_GAME,GAME);cDraw();cMsg('看上面的小圖，在下面的釘板上畫出一模一樣的圖形！');}
+function cCheck(){
+  const T=targetUnits(CLEVELS[C.lv]),D=cDrawnUnits();
+  const full=[...T].every(u=>D.has(u)),extra=[...D].filter(u=>!T.has(u)).length;
+  if(full&&!extra){
+    GAME.csolved=[...new Set([...(GAME.csolved||[]),C.lv])];sv(K_GAME,GAME);C.pen=null;cDraw();chime(3);
+    const next=C.lv+1<CLEVELS.length?C.lv+1:null,cur=C.lv;
+    cMsg(next!==null?'🎉 一模一樣！過關了！準備下一關…':'🏆 全部過關！你是畫線大師！','win');
+    if(next!==null)setTimeout(()=>{if(C.lv===cur)cStart(next);},1600);
+  }else if(full&&extra)cMsg('形狀都畫到了，可是多畫了紅色的線，按「↶ 退一步」把它刪掉！','stuck');
+  else cMsg('繼續畫！');
+}
+function cTap(p,fromMove){
+  if(!C.pen){C.pen=p;cDraw();return;}
+  if(C.pen[0]===p[0]&&C.pen[1]===p[1]){if(!fromMove)cLift=true;return;}
+  C.segs.push([C.pen,p]);C.pen=p;C.hint=null;cLift=false;cDraw();cCheck();
+}
+function cUndo(){if(C.segs.length){const s=C.segs.pop();C.pen=s[0];}else C.pen=null;C.hint=null;cDraw();cMsg('退一步了！');}
+function cReset(){C.segs=[];C.pen=null;C.hint=null;cDraw();cMsg('重新開始！');}
+function cHint(){const T=targetUnits(CLEVELS[C.lv]),D=cDrawnUnits();const miss=[...T].filter(u=>!D.has(u));
+  if(!miss.length){cMsg('要畫的線都畫好了，檢查看看有沒有多畫的線！');return;}
+  C.hint=miss[0];cDraw();cMsg('💡 黃色虛線的地方還沒畫喔！');}
+(function(){const S=document.getElementById('cSvg');
+  const pick=e=>{const L=CLEVELS[C.lv];const pt=S.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(S.getScreenCTM().inverse());
+    const sp=80/(L.g-1),x=Math.round((p.x-10)/sp),y=Math.round((p.y-10)/sp);if(x<0||y<0||x>=L.g||y>=L.g)return null;
+    const [px,py]=cxy(L,[x,y]);return Math.hypot(px-p.x,py-p.y)<sp*0.32?[x,y]:null;};
+  S.addEventListener('pointerdown',e=>{if(!gRunning())return;cDrag=true;cLift=false;S.setPointerCapture(e.pointerId);const p=pick(e);if(p)cTap(p,false);});
+  S.addEventListener('pointermove',e=>{if(!cDrag||!gRunning())return;const p=pick(e);if(p)cTap(p,true);});
+  S.addEventListener('pointerup',()=>{cDrag=false;if(cLift){C.pen=null;cLift=false;cDraw();cMsg('提筆了！點一個點，從新的地方開始畫。');}});
+  S.addEventListener('pointercancel',()=>cDrag=false);
+})();
+let gMode='one';
+function gSwitch(m){gMode=m;document.querySelectorAll('.gsub button').forEach(b=>b.classList.toggle('on',b.dataset.g===m));
+  document.getElementById('gpOne').hidden=m!=='one';document.getElementById('gpCopy').hidden=m!=='copy';if(m==='one')gDraw();else cDraw();}
+C.lv=Math.min(GAME.clevel||0,CLEVELS.length-1);
 G.lv=Math.min(GAME.level||0,LEVELS.length-1);
 gStartTimer();
 
