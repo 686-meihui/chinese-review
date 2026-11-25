@@ -213,6 +213,20 @@ body.kpon .score{display:none}
 .qhead{margin:16px 0 4px;font-size:19px;color:var(--sky)}
 .opt.long{display:block;width:100%;text-align:left;font-size:20px}
 .cw{font-size:26px;letter-spacing:2px}
+.fslots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+.fslot{width:46px;height:46px;border:2.5px dashed #cdbcee;border-radius:10px;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:30px;color:#7b55c0;
+  background-image:linear-gradient(#eee6f8,#eee6f8),linear-gradient(#eee6f8,#eee6f8);background-size:100% 1px,1px 100%;background-position:center;background-repeat:no-repeat}
+.fslot.got{border-style:solid;border-color:var(--leaf);color:var(--ink)}
+.fslot.new{animation:pop .35s}
+.fbig{font-size:150px;line-height:1.1;text-align:center;color:#3b2a1e;background:#fff;border:3px solid #cdbcee;border-radius:22px;width:220px;margin:6px auto 12px;
+  background-image:linear-gradient(90deg,transparent 49.5%,#f1d9c9 49.5%,#f1d9c9 50.5%,transparent 50.5%),linear-gradient(transparent 49.5%,#f1d9c9 49.5%,#f1d9c9 50.5%,transparent 50.5%)}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;max-width:560px;margin:0 auto}
+.fbtn{font:inherit;font-size:36px;height:64px;border-radius:14px;border:2.5px solid #9b7bd1;background:#f4effc;cursor:pointer;color:var(--ink)}
+.fbtn.got{background:var(--leaf-soft);border-color:var(--leaf);color:var(--leaf);opacity:.55}
+.fbtn.no{background:var(--red-soft);border-color:var(--red);animation:shake .4s}
+.fbtn.hint{background:var(--gold);border-color:#c98e12;animation:blink .5s 4}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#fLevels .lvb{font-size:20px}
 </style>
 </head>
 <body>
@@ -366,7 +380,7 @@ body.kpon .score{display:none}
   <div id="gPlay" hidden>
     <div class="subtabs gsub">
       <button data-g="one" class="on" onclick="gSwitch('one')">✏️ 一筆畫</button>
-      <button data-g="copy" onclick="gSwitch('copy')">📐 照樣畫線</button>
+      <button data-g="find" onclick="gSwitch('find')">🔍 字裡找字</button>
     </div>
     <div id="gpOne">
       <div class="gbar">
@@ -381,22 +395,19 @@ body.kpon .score{display:none}
       <div class="gboard"><svg id="gSvg" viewBox="-6 -6 112 112"></svg></div>
       <div class="glevels" id="gLevels"></div>
     </div>
-    <div id="gpCopy" hidden>
+    <div id="gpFind" hidden>
       <div class="gbar">
-        <span id="cLevel"></span>
+        <span id="fLevel"></span>
         <span>
-          <button class="btn" onclick="cUndo()">↶ 退一步</button>
-          <button class="btn" onclick="cReset()">↺ 重來</button>
-          <button class="btn" onclick="cHint()">💡 提示</button>
+          <button class="btn" onclick="fReset()">↺ 重來</button>
+          <button class="btn" onclick="fHint()">💡 提示</button>
         </span>
       </div>
-      <p class="tip gmsg" id="cMsg">看上面的小圖，在下面的釘板上畫出一模一樣的圖形！</p>
-      <div class="cwrap">
-        <div class="cprev"><div class="cplab">照這個畫 👇</div><svg id="cPrev" viewBox="0 0 100 100"></svg></div>
-        <div class="gboard cboard"><svg id="cSvg" viewBox="0 0 100 100"></svg></div>
-      </div>
-      <p class="tip" style="color:var(--muted);font-size:15px;text-align:center">點一個點開始，再點另一個點就會連成線。點目前的點（橘色）一次可以「提筆」，換到別的地方畫。也可以用手指直接拖著畫。</p>
-      <div class="glevels" id="cLevels"></div>
+      <p class="tip gmsg" id="fMsg"></p>
+      <div class="fslots" id="fSlots"></div>
+      <div class="fbig" id="fBig"></div>
+      <div class="fgrid" id="fGrid"></div>
+      <div class="glevels" id="fLevels"></div>
     </div>
   </div>
 </section>
@@ -945,7 +956,7 @@ function celebrate(n,perfect,pct,id,r){
   }
   if(r.firstToday){const s=streak();h+=`<div class="m-sub small">📅 今天第一次練習！${s>1?`已經連續練習 <b>${s}</b> 天了，好厲害！`:'每天練習一下，會越來越厲害喔！'}</div>`;}
   let btns;
-  if(r.newTicket){h+=`<div class="ticket">🎟️ 獎盃集滿 ${GAME_EVERY} 座！送你 <b>10 分鐘</b>益智遊戲時間！（一筆畫、照樣畫線）</div>`;
+  if(r.newTicket){h+=`<div class="ticket">🎟️ 獎盃集滿 ${GAME_EVERY} 座！送你 <b>10 分鐘</b>益智遊戲時間！（一筆畫、字裡找字）</div>`;
     btns='<button class="btn main big-btn" onclick="goGame()">🎮 現在去玩</button><button class="btn" onclick="closeModal()">等一下再玩</button>';}
   openModal(h,btns);chime(n);if(n>=2||r.newTicket)confetti();
 }
@@ -964,7 +975,7 @@ function showShelf(){
   h+=`</div><div style="margin-top:8px"><button class="btn" style="font-size:14px" id="confirmReset">清除全部紀錄</button></div>`;
   openModal(h);
   const cr=document.getElementById('confirmReset');
-  cr.onclick=()=>{if(cr.dataset.s){STARS={};LOG=[];GAME={left:0,granted:0,level:0,solved:[],clevel:0,csolved:[]};[K_STARS,K_LOG,K_GAME].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});updTotal(false);gRender&&gRender();showShelf();}
+  cr.onclick=()=>{if(cr.dataset.s){STARS={};LOG=[];GAME={left:0,granted:0,level:0,solved:[],flevel:0,fsolved:[]};[K_STARS,K_LOG,K_GAME].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});updTotal(false);gRender&&gRender();showShelf();}
     else{cr.dataset.s=1;cr.textContent='再按一次，確定清除（獎盃、紀錄都會不見）';}};
 }
 function welcomeBack(){
@@ -1056,7 +1067,7 @@ function gStartTimer(){clearInterval(gTick);gTick=setInterval(()=>{
   if(!gRunning()||document.hidden)return;
   GAME.left=Math.max(0,GAME.left-1);if(GAME.left%5===0)sv(K_GAME,GAME);
   document.getElementById('gTimer').textContent='⏰ 剩下 '+fmt(GAME.left);
-  if(GAME.left===60){gMsg('⏰ 還剩 1 分鐘喔！');cMsg('⏰ 還剩 1 分鐘喔！');}
+  if(GAME.left===60){gMsg('⏰ 還剩 1 分鐘喔！');fMsg('⏰ 還剩 1 分鐘喔！');}
   if(GAME.left===0){sv(K_GAME,GAME);updTotal(false);gRender();
     openModal('<div style="font-size:70px">⏰</div><div class="m-title">時間到囉！</div><div class="m-sub">玩得很開心吧！回去練習，拿到更多獎盃就能再玩！</div>','<button class="btn main big-btn" onclick="closeModal();document.querySelector(\'#tabs button[data-t=u0]\').click()">回去練習 📖</button>');}
 },1000);}
@@ -1092,92 +1103,73 @@ function genTrail(seed,W,H,len){
  [5,5,28],[6,6,24],[6,6,28],[6,6,30],[6,6,32],[6,6,34],[6,6,36],[6,6,38],[6,6,40],[6,6,44]].forEach(([w,h,l],i)=>{
   const t=genTrail(1000+i*37,w,h,l);LEVELS.push({name:(i<10?'進階 ':'挑戰 ')+(i+1),n:t.n,e:t.e});});
 
-/* ---------- 照樣畫線 ---------- */
-const CLEVELS=[
- {g:5,s:[[[2,1],[1,3],[3,3],[2,1]]]},
- {g:5,s:[[[1,1],[3,1],[3,3],[1,3],[1,1]]]},
- {g:5,s:[[[1,1],[3,1],[3,3],[2,4],[1,3],[1,1]]]},
- {g:5,s:[[[0,2],[4,2]],[[2,0],[4,2],[2,4]]]},
- {g:5,s:[[[1,4],[1,2],[2,1],[3,2],[3,4],[1,4]],[[1,2],[3,2]]]},
- {g:5,s:[[[0,0],[4,0],[0,4],[4,4],[0,0]]]},
- {g:5,s:[[[1,4],[1,0],[4,1],[1,2]]]},
- {g:5,s:[[[0,1],[2,3],[4,2],[2,1],[0,3],[0,1]]]},
- {g:5,s:[[[2,0],[4,2],[2,4],[0,2],[2,0]],[[2,0],[2,4]],[[0,2],[4,2]]]},
- {g:5,s:[[[0,1],[4,1],[4,4],[0,4],[0,1],[2,3],[4,1]]]},
+/* ---------- 字裡找字 ---------- */
+// t=題目字（小一、小二學過的字）；a=藏在裡面的字（用這個字的一部分筆畫就能寫出來）；d=不在裡面的干擾字
+const FLEVELS=[
+ {t:'明',a:'一二口日月',d:'人十木女子心'},
+ {t:'唱',a:'一二口日昌',d:'人十木女子田'},
+ {t:'草',a:'一二十口日早',d:'人木女子月田'},
+ {t:'森',a:'一十木林人八',d:'日口女子月山'},
+ {t:'菜',a:'一十木采人八',d:'日口女子山目'},
+ {t:'福',a:'一二十口日田',d:'人木女子月心'},
+ {t:'冒',a:'一二三口日目',d:'人十木女子心'},
+ {t:'青',a:'一二三十土王月',d:'人木女子口心'},
+ {t:'時',a:'一二十土寸寺日口',d:'人木女子山月'},
+ {t:'謝',a:'一二三口言身寸射',d:'人木女子心田'},
+ {t:'歌',a:'一二口丁可哥欠人',d:'十日木女子月'},
+ {t:'喜',a:'一二十士口古吉豆',d:'人木女子月日'},
+ {t:'黃',a:'一二十口日田由八',d:'人女子月木心'},
+ {t:'重',a:'一二十千口日田中土里',d:'人木女子月心'},
+ {t:'春',a:'一二三人八大天夫日口',d:'十木女子月心'},
+ {t:'活',a:'一二十千口古舌士汁沽',d:'人日田木水女'},
+ {t:'話',a:'一二三十千口言舌古',d:'人木女子月日'},
+ {t:'東',a:'一二十口日田中木人八',d:'女子月心白山'},
+ {t:'香',a:'一二十千口日木禾人八',d:'女子月心田山'},
+ {t:'想',a:'一二三十口日目木相心人八',d:'女月白子刀牛'},
+ {t:'動',a:'一二十千口日田中土里重力',d:'人木女子月心'},
+ {t:'樹',a:'一二十人八木士口古吉豆寸',d:'女子月心日山'},
+ {t:'種',a:'一二十千口日田中里木禾重人八',d:'女子山月心白'},
 ];
-const gcd=(a,b)=>b?gcd(b,a%b):a;
-function units(a,b){const dx=b[0]-a[0],dy=b[1]-a[1],g=gcd(Math.abs(dx),Math.abs(dy))||1,sx=dx/g,sy=dy/g,out=[];
-  for(let i=0;i<g;i++){const p=[a[0]+sx*i,a[1]+sy*i],q=[p[0]+sx,p[1]+sy];const x=p.join(','),y=q.join(',');out.push(x<y?x+'|'+y:y+'|'+x);}return out;}
-function targetUnits(L){const set=new Set();L.s.forEach(st=>{for(let i=0;i<st.length-1;i++)units(st[i],st[i+1]).forEach(u=>set.add(u));});return set;}
-(function(){ // 產生更難的關卡：線越來越多
-  const R=rng(777);
-  for(let i=0;i<20;i++){
-    const g=i<8?5:6,k=4+Math.floor(i/2.5),minU=6+Math.round(i*0.7);
-    let lv,tries=0;
-    do{
-      const strokes=[];let left=k;
-      while(left>0){const len=Math.min(left,2+Math.floor(R()*4));left-=len;
-        let p=[Math.floor(R()*g),Math.floor(R()*g)];const st=[p];
-        for(let j=0;j<len;j++){let q;do{q=[Math.floor(R()*g),Math.floor(R()*g)];}while((q[0]===p[0]&&q[1]===p[1])||Math.abs(q[0]-p[0])+Math.abs(q[1]-p[1])>4);st.push(q);p=q;}
-        strokes.push(st);}
-      lv={g,s:strokes};
-    }while(targetUnits(lv).size<minU&&++tries<200);
-    CLEVELS.push(lv);
+let F={lv:0,found:[],grid:[]};
+function fMsg(t,cls=''){const m=document.getElementById('fMsg');m.innerHTML=t;m.className='tip gmsg '+cls;}
+function fStart(i){const L=FLEVELS[i];F={lv:i,found:[],grid:shuffle([...L.a,...L.d])};GAME.flevel=i;sv(K_GAME,GAME);fDraw();
+  fMsg(`「<b>${L.t}</b>」這個字裡，藏著 <b>${[...L.a].length}</b> 個字！用「${L.t}」的一部分筆畫就能寫出來的字，把它們找出來！`);}
+function fReset(){fStart(F.lv);}
+function fDraw(){
+  const L=FLEVELS[F.lv],A=[...L.a];
+  document.getElementById('fLevel').innerHTML=`第 <b>${F.lv+1}</b> 關　<small>找到 ${F.found.length} / ${A.length} 個</small>`;
+  document.getElementById('fSlots').innerHTML=A.map((_,i)=>`<span class="fslot ${F.found[i]?'got':''} ${i===F.found.length-1&&F.justFound?'new':''}">${F.found[i]||''}</span>`).join('');
+  document.getElementById('fBig').textContent=L.t;
+  const G=document.getElementById('fGrid');G.innerHTML='';
+  F.grid.forEach(ch=>{const b=document.createElement('button');b.className='fbtn'+(F.found.includes(ch)?' got':'');b.textContent=ch;b.dataset.c=ch;
+    b.onclick=()=>fPick(ch,b);G.appendChild(b);});
+  document.getElementById('fLevels').innerHTML=FLEVELS.map((l,i)=>`<button class="lvb ${i===F.lv?'on':''} ${(GAME.fsolved||[]).includes(i)?'ok':''}" onclick="fStart(${i})">${(GAME.fsolved||[]).includes(i)?'⭐':''}${l.t}</button>`).join('');
+}
+function fPick(ch,b){
+  if(!gRunning())return;
+  const L=FLEVELS[F.lv];
+  if(F.found.includes(ch))return;
+  if(L.a.includes(ch)){
+    F.found.push(ch);F.justFound=true;fDraw();F.justFound=false;
+    try{const A=window.AudioContext||window.webkitAudioContext;const c=new A(),o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=660+F.found.length*40;o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(.2,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.3);o.start();o.stop(c.currentTime+.32);}catch(e){}
+    if(F.found.length===[...L.a].length){
+      GAME.fsolved=[...new Set([...(GAME.fsolved||[]),F.lv])];sv(K_GAME,GAME);fDraw();chime(3);
+      const next=F.lv+1<FLEVELS.length?F.lv+1:null,cur=F.lv;
+      fMsg(next!==null?'🎉 全部找到了！你的眼睛好厲害！準備下一關…':'🏆 全部關卡都過了！你是找字大偵探！','win');
+      if(next!==null)setTimeout(()=>{if(F.lv===cur)fStart(next);},1800);
+    }else fMsg(`✔ 找到「<b>${ch}</b>」了！還有 <b>${[...L.a].length-F.found.length}</b> 個藏在「${L.t}」裡面。`);
+  }else{
+    b.classList.add('no');setTimeout(()=>b.classList.remove('no'),600);
+    fMsg(`「${ch}」不在「${L.t}」裡面喔！再仔細看看「${L.t}」的筆畫。`,'stuck');
   }
-})();
-let C={lv:0,segs:[],pen:null,hint:null},cDrag=false,cLift=false;
-const cxy=(L,p)=>{const sp=80/(L.g-1);return [10+p[0]*sp,10+p[1]*sp];};
-function cDrawnUnits(){const set=new Set();C.segs.forEach(([a,b])=>units(a,b).forEach(u=>set.add(u)));return set;}
-function cDraw(){
-  const L=CLEVELS[C.lv],T=targetUnits(L),D=cDrawnUnits();
-  document.getElementById('cLevel').innerHTML=`第 <b>${C.lv+1}</b> 關　<small>${L.g}×${L.g} 釘板</small>`;
-  const dots=(S,r)=>{for(let y=0;y<L.g;y++)for(let x=0;x<L.g;x++){const [px,py]=cxy(L,[x,y]);const c=document.createElementNS(svgNS,'circle');c.setAttribute('cx',px);c.setAttribute('cy',py);c.setAttribute('r',r);c.setAttribute('class','cdot'+(C.pen&&S.id==='cSvg'&&C.pen[0]===x&&C.pen[1]===y?' pen':''));S.appendChild(c);}};
-  const line=(S,a,b,cls)=>{const l=document.createElementNS(svgNS,'line');const[x1,y1]=cxy(L,a),[x2,y2]=cxy(L,b);Object.entries({x1,y1,x2,y2}).forEach(([q,v])=>l.setAttribute(q,v));l.setAttribute('class',cls);S.appendChild(l);};
-  const P=document.getElementById('cPrev');P.innerHTML='';dots(P,2.6);
-  L.s.forEach(st=>{for(let i=0;i<st.length-1;i++)line(P,st[i],st[i+1],'ctgt');});
-  const S=document.getElementById('cSvg');S.innerHTML='';
-  const full=[...T].every(u=>D.has(u)),extra=[...D].some(u=>!T.has(u));
-  if(C.hint){const [a,b]=C.hint.split('|').map(z=>z.split(',').map(Number));line(S,a,b,'chint');}
-  D.forEach(u=>{const [a,b]=u.split('|').map(z=>z.split(',').map(Number));line(S,a,b,'cline'+(full&&extra&&!T.has(u)?' bad':''));});
-  dots(S,2.5);
-  document.getElementById('cLevels').innerHTML=CLEVELS.map((l,i)=>`<button class="lvb ${i===C.lv?'on':''} ${(GAME.csolved||[]).includes(i)?'ok':''}" onclick="cStart(${i})">${(GAME.csolved||[]).includes(i)?'⭐':''}${i+1}</button>`).join('');
 }
-function cMsg(t,cls=''){const m=document.getElementById('cMsg');m.textContent=t;m.className='tip gmsg '+cls;}
-function cStart(i){C={lv:i,segs:[],pen:null,hint:null};GAME.clevel=i;sv(K_GAME,GAME);cDraw();cMsg('看上面的小圖，在下面的釘板上畫出一模一樣的圖形！');}
-function cCheck(){
-  const T=targetUnits(CLEVELS[C.lv]),D=cDrawnUnits();
-  const full=[...T].every(u=>D.has(u)),extra=[...D].filter(u=>!T.has(u)).length;
-  if(full&&!extra){
-    GAME.csolved=[...new Set([...(GAME.csolved||[]),C.lv])];sv(K_GAME,GAME);C.pen=null;cDraw();chime(3);
-    const next=C.lv+1<CLEVELS.length?C.lv+1:null,cur=C.lv;
-    cMsg(next!==null?'🎉 一模一樣！過關了！準備下一關…':'🏆 全部過關！你是畫線大師！','win');
-    if(next!==null)setTimeout(()=>{if(C.lv===cur)cStart(next);},1600);
-  }else if(full&&extra)cMsg('形狀都畫到了，可是多畫了紅色的線，按「↶ 退一步」把它刪掉！','stuck');
-  else cMsg('繼續畫！');
-}
-function cTap(p,fromMove){
-  if(!C.pen){C.pen=p;cDraw();return;}
-  if(C.pen[0]===p[0]&&C.pen[1]===p[1]){if(!fromMove)cLift=true;return;}
-  C.segs.push([C.pen,p]);C.pen=p;C.hint=null;cLift=false;cDraw();cCheck();
-}
-function cUndo(){if(C.segs.length){const s=C.segs.pop();C.pen=s[0];}else C.pen=null;C.hint=null;cDraw();cMsg('退一步了！');}
-function cReset(){C.segs=[];C.pen=null;C.hint=null;cDraw();cMsg('重新開始！');}
-function cHint(){const T=targetUnits(CLEVELS[C.lv]),D=cDrawnUnits();const miss=[...T].filter(u=>!D.has(u));
-  if(!miss.length){cMsg('要畫的線都畫好了，檢查看看有沒有多畫的線！');return;}
-  C.hint=miss[0];cDraw();cMsg('💡 黃色虛線的地方還沒畫喔！');}
-(function(){const S=document.getElementById('cSvg');
-  const pick=e=>{const L=CLEVELS[C.lv];const pt=S.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(S.getScreenCTM().inverse());
-    const sp=80/(L.g-1),x=Math.round((p.x-10)/sp),y=Math.round((p.y-10)/sp);if(x<0||y<0||x>=L.g||y>=L.g)return null;
-    const [px,py]=cxy(L,[x,y]);return Math.hypot(px-p.x,py-p.y)<sp*0.32?[x,y]:null;};
-  S.addEventListener('pointerdown',e=>{if(!gRunning())return;cDrag=true;cLift=false;S.setPointerCapture(e.pointerId);const p=pick(e);if(p)cTap(p,false);});
-  S.addEventListener('pointermove',e=>{if(!cDrag||!gRunning())return;const p=pick(e);if(p)cTap(p,true);});
-  S.addEventListener('pointerup',()=>{cDrag=false;if(cLift){C.pen=null;cLift=false;cDraw();cMsg('提筆了！點一個點，從新的地方開始畫。');}});
-  S.addEventListener('pointercancel',()=>cDrag=false);
-})();
+function fHint(){const L=FLEVELS[F.lv];const miss=[...L.a].filter(c=>!F.found.includes(c));if(!miss.length)return;
+  const ch=miss[Math.floor(Math.random()*miss.length)];const b=document.querySelector(`#fGrid .fbtn[data-c="${ch}"]`);
+  if(b){b.classList.add('hint');setTimeout(()=>b.classList.remove('hint'),2400);}fMsg('💡 看看閃閃發亮的那個字！');}
 let gMode='one';
 function gSwitch(m){gMode=m;document.querySelectorAll('.gsub button').forEach(b=>b.classList.toggle('on',b.dataset.g===m));
-  document.getElementById('gpOne').hidden=m!=='one';document.getElementById('gpCopy').hidden=m!=='copy';if(m==='one')gDraw();else cDraw();}
-C.lv=Math.min(GAME.clevel||0,CLEVELS.length-1);
+  document.getElementById('gpOne').hidden=m!=='one';document.getElementById('gpFind').hidden=m!=='find';if(m==='one')gDraw();else{if(!F.grid.length)fStart(F.lv);else fDraw();}}
+F.lv=Math.min(GAME.flevel||0,FLEVELS.length-1);
 G.lv=Math.min(GAME.level||0,LEVELS.length-1);
 gStartTimer();
 
