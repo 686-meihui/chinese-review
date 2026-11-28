@@ -567,7 +567,7 @@ const words=[
 '(甫捕補埔)[]捉[ㄓㄨㄛ]|捕','杜[ㄉㄨˋ](甫捕補埔)[]|甫','平[ㄆㄧㄥˊ](甫捕補埔)[]族[ㄗㄨˊ]|埔','(甫捕補埔)[]手[ㄕㄡˇ]|捕',
 '驚[ㄐㄧㄥ]魂[ㄏㄨㄣˊ](甫捕補埔)[]定[ㄉㄧㄥˋ]|甫','(甫捕補埔)[]習[ㄒㄧˊ]|補','(甫捕補埔)[]給[ㄐㄧˇ]|補','(甫捕補埔)[]交[ㄐㄧㄠ]|補','新[ㄒㄧㄣ](甫捕補埔)[]|埔',
 '(因困囚回圃)[]此[ㄘˇ]|因','(因困囚回圃)[]犯[ㄈㄢˋ]|囚','受[ㄕㄡˋ](因困囚回圃)[]|困','(因困囚回圃)[]家[ㄐㄧㄚ]|回',
-'(因困囚回圃)[]為[ㄨㄟˋ]|因','(因困囚回圃)[]素[ㄙㄨˋ]|因','原[ㄩㄢˊ](因困囚回圃)[]|因','菜[ㄘㄞˋ](因困囚回圃)[]|圃',
+'(因困囚回圃)[]為[ㄨㄟˋ]|因','(應因)[]該[ㄍㄞ]|應','(因困囚回圃)[]素[ㄙㄨˋ]|因','原[ㄩㄢˊ](因困囚回圃)[]|因','菜[ㄘㄞˋ](因困囚回圃)[]|圃',
 '(因困囚回圃)[]苦[ㄎㄨˇ]|困','花[ㄏㄨㄚ](因困囚回圃)[]|圃','(因困囚回圃)[ㄧㄣ]此[]|因',
 '(北比此)[]賽[ㄙㄞˋ]|比','東[ㄉㄨㄥ]西[ㄒㄧ]南[ㄋㄢˊ](北比此)[]|北','從[ㄘㄨㄥˊ](北比此)[]|此','對[ㄉㄨㄟˋ](北比此)[]|比',
 '可[ㄎㄜˇ](受愛)[]|愛','接[ㄐㄧㄝ](受愛)[]|受','喜[ㄒㄧˇ](受愛)[]|愛','忍[ㄖㄣˇ](受愛)[]|受',
@@ -773,13 +773,36 @@ const subs=[
  ['','秋天','來了，柿餅節的活動開始了。','春天',false,'季節換了，意思就不一樣。'],
  ['原本','靜靜','的新埔小鎮。','安安靜靜',true,'「靜靜」和「安安靜靜」都是沒有聲音、很安靜。'],
 ];
+// 詞語的意思：[詞語（課文裡的句子）, 問題, 對不對, 說明]
+const means=[
+ ['<span class="dot">因此</span>（因此變得熱鬧起來）','意思是「因而」嗎？',true,'「因此」和「因而」都是「所以」的意思，用來說結果。'],
+ ['<span class="dot">因此</span>（因此變得熱鬧起來）','意思是「但是」嗎？',false,'「因此」是說結果；「但是」是轉折，意思不一樣。'],
+ ['<span class="dot">走進</span>（走進小鎮）','意思是「步行進入」嗎？',true,'「走進」就是用腳走路進去。'],
+ ['<span class="dot">遠</span>（遠看一籃一籃的柿子）','「遠」的相反詞是「近」嗎？',true,'「遠」和「近」是相對的，課文裡也有「遠看」和「近看」。'],
+ ['<span class="dot">遠</span>（遠看一籃一籃的柿子）','「遠」的相反詞是「高」嗎？',false,'「遠」的相反詞是「近」；「高」的相反詞是「矮」或「低」。'],
+ ['<span class="dot">可愛</span>（真是可愛）','意思是「討人喜愛」嗎？',true,'「可愛」就是討人喜愛。'],
+ ['<span class="dot">風乾</span>（把柿子慢慢風乾）','意思是「任風吹乾」嗎？',true,'「風乾」就是讓風把東西吹乾。'],
+ ['<span class="dot">風乾</span>（把柿子慢慢風乾）','意思是「用火烤乾」嗎？',false,'「風乾」是用風吹乾，不是用火烤。'],
+ ['<span class="dot">甜</span>（又香又甜的柿餅）','「甜」的相反詞是「苦」嗎？',true,'「甜」和「苦」是相對的味道。'],
+ ['<span class="dot">買</span>（買柿餅送給親朋好友）','意思是「以金錢購進東西」嗎？',true,'「買」就是以金錢購進東西。'],
+ ['<span class="dot">買</span>（買柿餅送給親朋好友）','意思是「把東西換成錢」嗎？',false,'把東西換成錢是「賣」；「買」是用錢換來東西。'],
+ ['<span class="dot">如意</span>（事事如意）','意思是「稱心」嗎？',true,'「如意」就是稱心，事情都照著心意。'],
+ ['<span class="dot">如意</span>（事事如意）','意思是「符合心中的意願」嗎？',true,'「如意」就是符合心中的意願。'],
+];
 function build4(){
   const A=document.getElementById('u4a');A.innerHTML='';
-  const done=scorer(document.getElementById('u4'),subs.length,build4);let i=1;
+  const done=scorer(document.getElementById('u4'),subs.length+means.length,build4);let i=1;
+  if(means.length){const h=document.createElement('h4');h.className='qhead';h.textContent='🔁 換一換，意思一樣嗎？';A.appendChild(h);}
   shuffle(subs).forEach(([pre,w,post,r,same,ex])=>{
     const stem=`${pre}<span class="dot">${w}</span>${post}<br><span style="font-size:18px;color:var(--muted)">「${w}」換成 <span class="swap">${r}</span></span>`;
     makeQ(A,i++,stem,[{label:'⭕ 意思一樣',value:true},{label:'❌ 意思不一樣',value:false}],same,ex,done);
   });
+  if(means.length){
+    const h=document.createElement('h4');h.className='qhead';h.textContent='📘 詞語的意思：說得對不對？';A.appendChild(h);
+    shuffle(means).forEach(([w,q,ok,ex])=>{
+      makeQ(A,i++,`${w}<br><span style="font-size:20px">${q}</span>`,[{label:'⭕ 對',value:true},{label:'❌ 不對',value:false}],ok,ex,done);
+    });
+  }
 }
 
 /* ---------- 課文挑戰 ---------- */
